@@ -1,0 +1,38 @@
+Login:   
+{
+"status": "success",
+"message": "Login effettuato con successo",
+"user": {
+   "name": "Fabio",
+   "surname": "Ceravolo",
+   "role": "Admin",
+}
+}
+{
+"status": "success",
+"message": "Login effettuato con successo"
+"user": {
+    "name": "Riccardo"
+    "surname": "Rimpici"
+    "role": "Admin"
+}
+}
+{
+"status": "success",
+"message": "Login effettuato con successo"
+"user": {
+    "name": "Lorenzo"
+    "surname": "Savi"
+    "role": "Normal"
+}
+}
+{
+"status": "success",
+"message": "Login effettuato con successo"
+"user": {
+    "name": "Andrea"
+    "surname": "Carminati"
+    "role": "Normal"
+}
+}
+
