@@ -1,0 +1,21 @@
+[
+{
+   "name": "fabioceravolo",
+   "passwd" : "1234",
+   "role": "Admin"
+},
+{
+    "user" : "stefanosana",
+    "passwd" : "3456",
+    "role": "Pony"
+},
+{
+    "name": "edoardocortinovis",
+    "passwd" : "7891",
+    "role": "Boss"
+}
+]   
+
+
+
+
