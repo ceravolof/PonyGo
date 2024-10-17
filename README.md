@@ -6,9 +6,9 @@ ordini, monitorare in tempo reale lo stato delle consegne e mantenere una
 comunicazione fluida con i propri fattorini, ottimizzando l'intero processo di consegne
 # Requisiti:
 
----- Requisiti di Dominio: ---
-
- 1 - Gestione degli Ordini:
+ Requisiti di Dominio:
+ 
+ **Gestione degli Ordini:** 
 
 - Il sistema deve permettere al pizzaiolo di inserire gli ordini ricevuti via telefono, associando ciascun ordine a un fattorino per la consegna.
 - Il fattorino deve essere identificato nel sistema e collegato agli ordini per una gestione ottimale delle consegne.
