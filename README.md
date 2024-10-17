@@ -6,7 +6,7 @@ ordini, monitorare in tempo reale lo stato delle consegne e mantenere una
 comunicazione fluida con i propri fattorini, ottimizzando l'intero processo di consegne
 # Requisiti:
 
-# Requisiti di Dominio:
+---- Requisiti di Dominio: ---
 
  1 - Gestione degli Ordini:
 
@@ -21,7 +21,7 @@ comunicazione fluida con i propri fattorini, ottimizzando l'intero processo di c
 
 -Il sistema deve consentire una gestione efficiente delle consegne, ottimizzando il carico di lavoro dei fattorini e permettendo di seguire le consegne in corso.
 
-# Requisiti Funzionali:
+---- Requisiti Funzionali: ----
 
  1 - Inserimento dell'Ordine:
 
@@ -39,7 +39,7 @@ comunicazione fluida con i propri fattorini, ottimizzando l'intero processo di c
 
 - Il sistema deve permettere al pizzaiolo di visualizzare su una mappa la posizione in tempo reale dei fattorini, per monitorare le consegne in corso e ottimizzare le assegnazioni degli ordini futuri.
 
-# Requisiti Non Funzionali:
+---- Requisiti Non Funzionali: ----
 
  1 - Usabilità:
 
