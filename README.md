@@ -8,55 +8,55 @@ comunicazione fluida con i propri fattorini, ottimizzando l'intero processo di c
 
  ### Requisiti di Dominio:
  
- **Gestione degli Ordini:** 
+ **1 - Gestione degli Ordini:** 
 
 - Il sistema deve permettere al pizzaiolo di inserire gli ordini ricevuti via telefono, associando ciascun ordine a un fattorino per la consegna.
 - Il fattorino deve essere identificato nel sistema e collegato agli ordini per una gestione ottimale delle consegne.
 
-2 - Monitoraggio delle Consegne:
+**2 - Monitoraggio delle Consegne:**
 
 - Il pizzaiolo deve poter monitorare lo stato delle consegne, vedendo se un ordine è in corso di consegna o è stato già completato.
 
-3 - Organizzazione delle Consegne:
+**3 - Organizzazione delle Consegne:**
 
 -Il sistema deve consentire una gestione efficiente delle consegne, ottimizzando il carico di lavoro dei fattorini e permettendo di seguire le consegne in corso.
 
----- Requisiti Funzionali: ----
+### Requisiti Funzionali: 
 
- 1 - Inserimento dell'Ordine:
+ **1 - Inserimento dell'Ordine:**
 
 - Il pizzaiolo deve poter inserire un ordine con i dettagli del cliente (indirizzo, numero di telefono, ecc.) e selezionare un fattorino per la consegna.
 
- 2 - Notifica al Fattorino:
+ **2 - Notifica al Fattorino:**
 
 - Una volta assegnato l'ordine, il fattorino deve ricevere una notifica con tutti i dettagli dell'ordine e le informazioni di contatto del cliente.
 
- 3 - Conferma di Consegna:
+ **3 - Conferma di Consegna:**
 
 - Dopo la consegna, il fattorino deve poter segnare l'ordine come "consegnato" direttamente tramite l'applicazione o il sistema, aggiornando lo stato dell'ordine in tempo reale per il pizzaiolo.
 
- 4 - Tracciamento della Posizione in Tempo Reale:
+**4 - Tracciamento della Posizione in Tempo Reale:**
 
 - Il sistema deve permettere al pizzaiolo di visualizzare su una mappa la posizione in tempo reale dei fattorini, per monitorare le consegne in corso e ottimizzare le assegnazioni degli ordini futuri.
 
----- Requisiti Non Funzionali: ----
+### Requisiti Non Funzionali: 
 
- 1 - Usabilità:
+ **1 - Usabilità:**
 
 - L' interfaccia dell'app per il pizzaiolo e per il fattorino deve essere intuitiva e facile da usare, garantendo la rapida gestione degli ordini e delle consegne.
 
- 2 - Performance:
+ **2 - Performance:**
 
 - Il sistema deve essere veloce nel gestire le operazioni di inserimento ordine, notifica e tracciamento in tempo reale, garantendo aggiornamenti tempestivi senza ritardi percepibili.
 
-3 - Scalabilità:
+**3 - Scalabilità:**
 
 - Il sistema deve poter gestire un numero crescente di ordini e fattorini senza cali di prestazioni, adattandosi a carichi di lavoro variabili.
 
- 4 - Affidabilità:
+ **4 - Affidabilità:**
 
 - Il sistema deve garantire alta disponibilità e ridondanza, in modo che sia sempre accessibile e operativo anche in caso di elevato traffico o guasti tecnici.
 
- 5 - Sicurezza:
+ **5 - Sicurezza:**
 
 - Devono essere implementati meccanismi di protezione dei dati, soprattutto per quanto riguarda le informazioni personali dei clienti (indirizzo, numero di telefono) e le credenziali dei fattorini e del pizzaiolo.
