@@ -1,75 +1,91 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login and Registration</title>
-    <!--<link rel="stylesheet" href="style.css">-->
-    <script>
-        function switchForm(showLogin) {
-            const loginForm = document.getElementById('login-form');
-            const registerForm = document.getElementById('register-form');
-            if (showLogin) {
-                loginForm.style.display = 'block';
-                registerForm.style.display = 'none';
-            } else {
-                loginForm.style.display = 'none';
-                registerForm.style.display = 'block';
-            }
-        }
-    </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login and Registration</title>
+  <script>
+    function switchForm(showLogin) {
+      document.getElementById('login-form').style.display = showLogin ? 'block' : 'none';
+      document.getElementById('register-form').style.display = showLogin ? 'none' : 'block';
+    }
+
+    // Callback per gestire il token di Google
+    function onSignIn(response) {
+      console.log("Google Token:", response.credential);
+      // Invia il token al backend per la verifica
+      fetch('/google-login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ token: response.credential })
+      })
+      .then(res => res.json())
+      .then(data => console.log("Server Response:", data))
+      .catch(error => console.error("Error:", error));
+    }
+  </script>
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
 <body>
-    <div class="container">
-        <div class="form-switcher">
-            <button onclick="switchForm(true)">Login</button>
-            <button onclick="switchForm(false)">Register</button>
-        </div>
-
-        <div id="login-form" style="display: block;">
-            <h1>Login</h1>
-            <form action="/login" method="POST">
-                <div class="form-group">
-                    <label for="email">Email:</label>
-                    <input type="email" id="email" name="email" required>
-                </div>
-                <div class="form-group">
-                    <label for="password">Password:</label>
-                    <input type="password" id="password" name="password" required>
-                </div>
-                <button type="submit">Login</button>
-            </form>
-        </div>
-
-        <div id="register-form" style="display: none;">
-            <h1>Register</h1>
-            <form action="/register" method="POST">
-                <div class="form-group">
-                    <label for="register-email">Email:</label>
-                    <input type="email" id="register-email" name="email" required>
-                </div>
-                <div class="form-group">
-                    <label for="register-username">Username:</label>
-                    <input type="text" id="register-username" name="username" required>
-                </div>
-                <div class="form-group">
-                    <label for="register-password">Password:</label>
-                    <input type="password" id="register-password" name="password" required>
-                </div>
-                <div class="form-group">
-                    <label for="register-type">Type:</label>
-                    <select id="register-type" name="type" required>
-                        <option value="user">User</option>
-                        <option value="admin">Admin</option>
-                    </select>
-                </div>
-                <button type="submit">Register</button>
-            </form>
-        </div>
+  <div class="container">
+    <div class="form-switcher">
+      <button onclick="switchForm(true)">Login</button>
+      <button onclick="switchForm(false)">Register</button>
     </div>
+
+    <div id="login-form" style="display: block;">
+      <h1>Login</h1>
+      <form action="/login" method="POST">
+        <div class="form-group">
+          <label for="email">Email:</label>
+          <input type="email" id="email" name="email" required>
+        </div>
+        <div class="form-group">
+          <label for="password">Password:</label>
+          <input type="password" id="password" name="password" required>
+        </div>
+        <button type="submit">Login</button>
+      </form>
+
+
+      <!-- Google Sign-In Integration -->
+      <div id="g_id_onload"
+           data-client_id="265932334016-5nnr1ncuhnq3phjjv1aposf975vnsf5t.apps.googleusercontent.com"
+           data-callback="onSignIn"
+           data-auto_prompt="false">
+      </div>
+      <div class="g_id_signin" data-type="standard"></div>
+    </div>
+
+    <div id="register-form" style="display: none;">
+      <h1>Register</h1>
+      <form action="/register" method="POST">
+        <div class="form-group">
+          <label for="register-email">Email:</label>
+          <input type="email" id="register-email" name="email" required>
+        </div>
+        <div class="form-group">
+          <label for="register-username">Username:</label>
+          <input type="text" id="register-username" name="username" required>
+        </div>
+        <div class="form-group">
+          <label for="register-password">Password:</label>
+          <input type="password" id="register-password" name="password" required>
+        </div>
+        <div class="form-group">
+          <label for="register-type">Type:</label>
+          <select id="register-type" name="type" required>
+            <option value="user">User</option>
+            <option value="admin">Admin</option>
+          </select>
+        </div>
+        <button type="submit">Register</button>
+      </form>
+    </div>
+  </div>
 </body>
 <style>
-    body {
+  body {
     font-family: Arial, sans-serif;
     background-color: #f4f4f9;
     margin: 0;
@@ -79,9 +95,9 @@
     align-items: center;
     height: 100vh;
     color: #333;
-}
+  }
 
-.container {
+  .container {
     background: white;
     padding: 20px 30px;
     border-radius: 8px;
@@ -89,21 +105,21 @@
     width: 100%;
     max-width: 400px;
     text-align: center;
-}
+  }
 
-h1 {
+  h1 {
     margin-bottom: 20px;
     font-size: 1.8em;
     color: #444;
-}
+  }
 
-.form-switcher {
+  .form-switcher {
     display: flex;
     justify-content: space-between;
     margin-bottom: 20px;
-}
+  }
 
-.form-switcher button {
+  .form-switcher button {
     flex: 1;
     background: #007BFF;
     color: white;
@@ -113,33 +129,33 @@ h1 {
     margin: 0 5px;
     cursor: pointer;
     font-size: 1em;
-}
+  }
 
-.form-switcher button:hover {
+  .form-switcher button:hover {
     background: #0056b3;
-}
+  }
 
-.form-group {
+  .form-group {
     margin-bottom: 15px;
     text-align: left;
-}
+  }
 
-label {
+  label {
     display: block;
     margin-bottom: 5px;
     font-weight: bold;
-}
+  }
 
-input, select {
+  input, select {
     width: 100%;
     padding: 10px;
     margin-bottom: 10px;
     border: 1px solid #ccc;
     border-radius: 4px;
     font-size: 1em;
-}
+  }
 
-button[type="submit"] {
+  button[type="submit"] {
     width: 100%;
     background: #28a745;
     color: white;
@@ -148,11 +164,10 @@ button[type="submit"] {
     border-radius: 5px;
     font-size: 1em;
     cursor: pointer;
-}
+  }
 
-button[type="submit"]:hover {
+  button[type="submit"]:hover {
     background: #218838;
-}
-
+  }
 </style>
 </html>

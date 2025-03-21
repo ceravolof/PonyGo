@@ -53,6 +53,27 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, '../frontend/login.html'));
 });
 
+//Login google 
+const { OAuth2Client } = require('google-auth-library');
+const client = new OAuth2Client("TUO_CLIENT_ID");
+
+app.post('/verifica-token', async (req, res) => {
+  const { token } = req.body;
+  try {
+    const ticket = await client.verifyIdToken({
+      idToken: token,
+      audience: "TUO_CLIENT_ID",
+    });
+
+    const payload = ticket.getPayload();
+    console.log("Utente autenticato:", payload);
+    res.json({ success: true, user: payload });
+  } catch (error) {
+    res.status(401).json({ success: false, message: "Token non valido" });
+  }
+});
+
+// da guardare reindirizzamento
 
 // Login page
 app.get('/login', (req, res) => {
