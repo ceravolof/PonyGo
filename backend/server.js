@@ -18,6 +18,11 @@ app.use(session({
   cookie: { secure: false } // Secure: true in production with HTTPS
 }));
 
+app.use((req, res, next) => {
+  res.setHeader('Cross-Origin-Opener-Policy', 'same-origin-allow-popups');
+  next();
+});
+
 // Middleware
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -53,27 +58,45 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, '../frontend/login.html'));
 });
 
-//Login google 
+//-----------------------------------------Login google-----------------------------------------
 const { OAuth2Client } = require('google-auth-library');
-const client = new OAuth2Client("TUO_CLIENT_ID");
+const client = new OAuth2Client("265932334016-5nnr1ncuhnq3phjjv1aposf975vnsf5t.apps.googleusercontent.com");
 
 app.post('/verifica-token', async (req, res) => {
+  console.log("Ricevuta richiesta di verifica token");
   const { token } = req.body;
+  console.log("Token ricevuto:", token ? "Presente" : "Assente");
   try {
     const ticket = await client.verifyIdToken({
       idToken: token,
-      audience: "TUO_CLIENT_ID",
+      audience: "265932334016-5nnr1ncuhnq3phjjv1aposf975vnsf5t.apps.googleusercontent.com",
     });
-
     const payload = ticket.getPayload();
     console.log("Utente autenticato:", payload);
+
+    let user = db.getUserByEmail(payload.email);
+
+    if (!user) {
+      user = db.createUser({
+        email: payload.email,
+        username: payload.name || payload.email.split('@')[0],
+        password: 'google-auth-' + Math.random().toString(36).substring(2),
+        type: 'user' // Imposta un ruolo predefinito
+      });
+    }
+
+    req.session.loggedin = true;
+    req.session.name = user.username;
+    req.session.role = user.type;
+
     res.json({ success: true, user: payload });
   } catch (error) {
+    console.error("Errore verifica token:", error);
     res.status(401).json({ success: false, message: "Token non valido" });
   }
 });
 
-// da guardare reindirizzamento
+//-------------------------------------------------------------------------------------------------------------------------------
 
 // Login page
 app.get('/login', (req, res) => {
@@ -150,19 +173,39 @@ app.get('/home', (req, res) => {
 });
 
 // API endpoint to get all users (admin only)
+// Vista HBS per mostrare utenti
+app.get('/admin/users/view', (req, res) => {
+  if (!req.session.loggedin || req.session.role !== 'admin') {
+    return res.redirect('/');
+  }
+
+  // Ottieni la lista degli utenti dal database
+  const users = db.getAllUsers();
+  
+  // Renderizza la pagina users.hbs e passa i dati degli utenti
+  res.render('admin/users', { users });
+});
+
+// Endpoint  per admin/users
 app.get('/admin/users', (req, res) => {
   if (!req.session.loggedin || req.session.role !== 'admin') {
     return res.redirect('/');
   }
 
   // Ottieni la lista degli utenti dal database
-  const users = db.getAllUsers(); // Assumi che getAllUsers() restituisca un array di utenti
-  console.log(users)
-
-  // Renderizza la pagina users.hbs e passa i dati degli utenti
-  res.render('admin/users', { users });
+  const users = db.getAllUsers();
+  console.log(users);
+  
+  // Controlla l'header Accept per determinare cosa vuole il client
+  const acceptHeader = req.headers.accept || '';
+  
+  if (acceptHeader.includes('application/json')) {
+    // Se richiede JSON, restituisci JSON
+    return res.json(users);
+  } else {
+    // Altrimenti serve la pagina HTML
+    return res.render('admin/users', { users });  }
 });
-
 
 
 // Start server

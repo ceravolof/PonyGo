@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -12,20 +13,32 @@
 
     // Callback per gestire il token di Google
     function onSignIn(response) {
+      console.log("Google Token ricevuto:", response);
+      console.log("Credential:", response.credential);
       console.log("Google Token:", response.credential);
       // Invia il token al backend per la verifica
-      fetch('/google-login', {
+      fetch('/verifica-token', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ token: response.credential })
       })
-      .then(res => res.json())
-      .then(data => console.log("Server Response:", data))
-      .catch(error => console.error("Error:", error));
+        .then(res => res.json())
+        .then(data => {
+          console.log("Server Response:", data);
+          if (data.success) {
+            console.log("Login effettuato con successo:", data.user);
+            window.location.href = '/home';
+          } else {
+            console.error("Errore durante il login:", data.message);
+          }
+        }
+        )
+        .catch(error => console.error("Errore nella richiesta:", error))
     }
   </script>
   <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
+
 <body>
   <div class="container">
     <div class="form-switcher">
@@ -47,12 +60,11 @@
         <button type="submit">Login</button>
       </form>
 
+      <br>
 
       <!-- Google Sign-In Integration -->
-      <div id="g_id_onload"
-           data-client_id="265932334016-5nnr1ncuhnq3phjjv1aposf975vnsf5t.apps.googleusercontent.com"
-           data-callback="onSignIn"
-           data-auto_prompt="false">
+      <div id="g_id_onload" data-client_id="265932334016-5nnr1ncuhnq3phjjv1aposf975vnsf5t.apps.googleusercontent.com"
+        data-callback="onSignIn" data-auto_prompt="false">
       </div>
       <div class="g_id_signin" data-type="standard"></div>
     </div>
@@ -146,7 +158,8 @@
     font-weight: bold;
   }
 
-  input, select {
+  input,
+  select {
     width: 100%;
     padding: 10px;
     margin-bottom: 10px;
@@ -170,4 +183,5 @@
     background: #218838;
   }
 </style>
+
 </html>
