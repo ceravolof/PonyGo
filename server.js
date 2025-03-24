@@ -57,7 +57,7 @@ app.get('/', (req, res) => {
     return res.redirect('/home');
   }
   console.log(req.session.loggedin);
-  res.sendFile(path.join(__dirname, '../frontend/login.html'));
+  res.sendFile(path.join(__dirname, '/frontend/login.html'));
 });
 
 //-----------------------------------------Login google-----------------------------------------
@@ -111,7 +111,7 @@ app.get('/login', (req, res) => {
     return res.redirect('/home');
   }
   console.log(req.session.loggedin);
-  res.sendFile(path.join(__dirname, '../frontend/login.html'));
+  res.sendFile(path.join(__dirname, '/frontend/login.html'));
 });
 
 // Register user (admin only)
@@ -161,7 +161,7 @@ app.get('/logout', (req, res) => {
 // Home page
 app.get('/home', (req, res) => {
   if (!req.session.loggedin) {
-    return res.redirect('../frontend/login.html');
+    return res.redirect('/frontend/login.html');
   }
 
   if (req.session.role === 'admin') {
