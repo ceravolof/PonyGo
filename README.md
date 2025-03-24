@@ -4,6 +4,13 @@ in modo semplice e intuitivo le consegne e le comunicazioni con i pony-pizza,
 tutto a portata di smartphone. Con pochi tocchi, le pizzerie possono assegnare 
 ordini, monitorare in tempo reale lo stato delle consegne e mantenere una 
 comunicazione fluida con i propri fattorini, ottimizzando l'intero processo di consegne
+
+- **Target:** Pizzerie;
+- **Problema che risolve:** Organizzazione delle consegne;
+- **Tecnologie utilizzate:** Javascript, Vue, Ubuntu, Server
+- **Competitor:** GloriaFood, MenuDrive,Slice,Toast,Uber Eats, Just Eat, Deliveroo, Glovo, Zapiet, DoorDash, Tiller, Gus, Speedline ,Shipday, Onfleet
+- **Timestamp:** 1726737736507
+
 # Requisiti:
 
  ### Requisiti di Dominio:
@@ -60,3 +67,5 @@ comunicazione fluida con i propri fattorini, ottimizzando l'intero processo di c
  **5 - Sicurezza:**
 
 - Devono essere implementati meccanismi di protezione dei dati, soprattutto per quanto riguarda le informazioni personali dei clienti (indirizzo, numero di telefono) e le credenziali dei fattorini e del pizzaiolo.
+
+![USECASEdef](https://github.com/user-attachments/assets/95d14733-f654-4948-b64c-92af9822e46a)

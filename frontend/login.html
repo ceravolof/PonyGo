@@ -11,6 +11,17 @@
       document.getElementById('register-form').style.display = showLogin ? 'none' : 'block';
     }
 
+
+    //PRENDO GOOGLEID DA BACKEND
+    fetch("/config")
+    .then(response => response.json(),
+  )
+    .then(config => {
+      document.getElementById("g_id_onload").setAttribute("data-client_id=", config.googleClientId);
+    });
+    
+
+
     // Callback per gestire il token di Google
     function onSignIn(response) {
       console.log("Google Token ricevuto:", response);
@@ -61,13 +72,11 @@
       </form>
 
       <br>
-
       <!-- Google Sign-In Integration -->
-      <div id="g_id_onload" data-client_id="265932334016-5nnr1ncuhnq3phjjv1aposf975vnsf5t.apps.googleusercontent.com"
-        data-callback="onSignIn" data-auto_prompt="false">
-      </div>
-      <div class="g_id_signin" data-type="standard"></div>
-    </div>
+     <!-- Google Sign-In Integration -->
+     <div id="g_id_onload" data-callback="onSignIn" data-auto_prompt="false" data-client_id=265932334016-5nnr1ncuhnq3phjjv1aposf975vnsf5t.apps.googleusercontent.com></div>
+     <div class="g_id_signin" data-type="standard"></div>
+   </div>
 
     <div id="register-form" style="display: none;">
       <h1>Register</h1>

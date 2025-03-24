@@ -10,6 +10,8 @@ const swaggerUi = require('swagger-ui-express');
 
 const app = express();
 
+require('dotenv').config();
+
 // Session setup
 app.use(session({
   secret: process.env.SESSION_SECRET || 'default_secret',
@@ -47,7 +49,7 @@ const swaggerOptions = {
 };
 
 const swaggerSpec = swaggerJsdoc(swaggerOptions);
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+app.use('/swag', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 // Routes
 app.get('/', (req, res) => {
@@ -61,6 +63,11 @@ app.get('/', (req, res) => {
 //-----------------------------------------Login google-----------------------------------------
 const { OAuth2Client } = require('google-auth-library');
 const client = new OAuth2Client("265932334016-5nnr1ncuhnq3phjjv1aposf975vnsf5t.apps.googleusercontent.com");
+
+// Endpoint per ottenere il Client ID (usato dal frontend)
+app.get('/config', (req, res) => {
+  res.json({ googleClientId: process.env.GOOGLE_CLIENT_ID });
+});
 
 app.post('/verifica-token', async (req, res) => {
   console.log("Ricevuta richiesta di verifica token");
@@ -119,7 +126,7 @@ app.post('/register', (req, res) => {
   }
 
   const user = db.createUser({ email, username, password, type });
-  req.session.message = `User (ID: ${user.id}) created successfully.`;
+  req.session.message = User ("ID : ${user.id}) created successfully.");
   res.redirect('/home');
 });
 
@@ -167,12 +174,12 @@ app.get('/home', (req, res) => {
     res.render('home', {
       name: req.session.name,
       role: req.session.role,
-      message: `Welcome back, ${req.session.name}!`
+      message: "Welcome back, ${req.session.name}!"
     });
   }
 });
 
-// API endpoint to get all users (admin only)
+// API endpoint to get all users 
 // Vista HBS per mostrare utenti
 app.get('/admin/users/view', (req, res) => {
   if (!req.session.loggedin || req.session.role !== 'admin') {
@@ -186,7 +193,7 @@ app.get('/admin/users/view', (req, res) => {
   res.render('admin/users', { users });
 });
 
-// Endpoint  per admin/users
+// Endpoint  per admin/users(admin only)
 app.get('/admin/users', (req, res) => {
   if (!req.session.loggedin || req.session.role !== 'admin') {
     return res.redirect('/');
@@ -210,7 +217,7 @@ app.get('/admin/users', (req, res) => {
 
 // Start server
 const port = 3000;
-app.listen(port, () => console.log(`Server started on port ${port}`));
+app.listen(port, () => console.log("Server started on port ${port}"));
 
 
 /**

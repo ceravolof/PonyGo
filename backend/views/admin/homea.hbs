@@ -107,27 +107,24 @@
         <div class="menu">
             <a href="/home">Home</a>
             <a href="/admin/users">Manage Users</a>
-            <a href="/admin/settings">Settings</a>
+            <a href="/swag">Swagger</a>
         </div>
         <button class="logout" onclick="window.location.href='/logout'">Logout</button>
     </div>
 
     <div class="container">
         <div class="welcome-message">
-            Welcome back, <span id="username">Admin</span>!
+            Welcome back admin <span id="username">{{name}}</span>!
         </div>
         <p>Use the menu to navigate through admin-specific functions.</p>
 
         <div class="admin-actions">
             <button onclick="window.location.href='/admin/users'">View All Users</button>
-            <button onclick="window.location.href='/admin/register'">Register New User</button>
-            <button onclick="window.location.href='/admin/settings'">Edit Settings</button>
+            <button onclick="window.location.href='/swag'">Swagger</button>
+            <!--<button onclick="window.location.href='/admin/register'">Register New User</button>-->
         </div>
     </div>
 
-    <script>
-        // Replace "Admin" with the actual admin username if needed
-        document.getElementById('username').textContent = "Admin John Doe"; // Example username
-    </script>
+   
 </body>
 </html>
