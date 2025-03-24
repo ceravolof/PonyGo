@@ -11,6 +11,41 @@ comunicazione fluida con i propri fattorini, ottimizzando l'intero processo di c
 - **Competitor:** GloriaFood, MenuDrive,Slice,Toast,Uber Eats, Just Eat, Deliveroo, Glovo, Zapiet, DoorDash, Tiller, Gus, Speedline ,Shipday, Onfleet
 - **Timestamp:** 1726737736507
 
+## Requisiti di avvio
+- Docker Desktop
+
+## Installazione di Docker
+1. Visita il sito ufficiale di Docker: [Docker Website](https://www.docker.com).
+2. Scarica Docker Desktop per Windows: **"Download for Windows - AMD64"**.
+3. Segui le istruzioni per completare l'installazione.
+4. Accedi o crea un account Docker.
+
+## Istruzioni per l'Avvio
+1. Avvia **Docker Desktop**.
+2. Scarica il progetto da **GitHub** ed estrai il contenuto della cartella **zip**.
+3. All'interno della cartella principale, crea un file denominato **.env**.
+4. Esegui il file **Setup.bat** con un doppio clic e attendi il completamento del processo, seguendo le eventuali istruzioni visualizzate nel terminale.
+5. Apri un browser e inserisci nella barra degli indirizzi: `http://localhost:3000`.
+
+## Credenziali di Accesso
+
+### Admin
+- **Email**: `admin@example.com`
+- **Password**: `123456`
+
+### Utente Standard
+- **Email**: `user@example.com`
+- **Password**: `abcdef`
+
+### Accesso con Google
+- Utilizza il tuo account Google per accedere.
+
+**Nota:** Assicurati che Docker Desktop sia avviato prima di eseguire il progetto per evitare errori di esecuzione.
+
+
+---
+
+
 # Requisiti:
 
  ### Requisiti di Dominio:
