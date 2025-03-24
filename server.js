@@ -114,7 +114,7 @@ app.get('/login', (req, res) => {
   res.sendFile(path.join(__dirname, '/frontend/login.html'));
 });
 
-// Register user (admin only)
+
 app.post('/register', (req, res) => {
   //if (!req.session.loggedin || req.session.role !== 'admin') {
   //  return res.status(403).send('Access denied');
@@ -122,12 +122,27 @@ app.post('/register', (req, res) => {
 
   const { email, username, password, type } = req.body;
   if (!email || !username || !password || !type) {
-    return res.render('error', { message: 'All fields are required!' });
+    return res.render('error', { message: 'Tutti i campi sono obbligatori!' });
   }
 
-  const user = db.createUser({ email, username, password, type });
-  req.session.message = User ("ID : ${user.id}) created successfully.");
-  res.redirect('/home');
+  try {
+    // Crea un nuovo utente con dbMock
+    const user = db.createUser({ email, username, password, type });
+
+    req.session.loggedin = true;
+    req.session.name = user.username;   // o qualunque campo tu voglia utilizzare
+    req.session.role = user.type;
+
+    // Imposta il messaggio di successo nella sessione
+    req.session.message = `Utente (ID: ${user.id}) creato con successo.`;
+
+    // Reindirizza alla home
+    res.redirect('/home');
+  } catch (err) {
+    // Gestisci l'errore (se l'utente non può essere creato)
+    console.error(err);
+    res.render('error', { message: err.message });
+  }
 });
 
 // Login endpoint
@@ -174,7 +189,7 @@ app.get('/home', (req, res) => {
     res.render('home', {
       name: req.session.name,
       role: req.session.role,
-      message: "Welcome back, ${req.session.name}!"
+      message: `Welcome back, ${req.session.name}!`
     });
   }
 });
@@ -188,7 +203,7 @@ app.get('/admin/users/view', (req, res) => {
 
   // Ottieni la lista degli utenti dal database
   const users = db.getAllUsers();
-  
+
   // Renderizza la pagina users.hbs e passa i dati degli utenti
   res.render('admin/users', { users });
 });
@@ -202,22 +217,23 @@ app.get('/admin/users', (req, res) => {
   // Ottieni la lista degli utenti dal database
   const users = db.getAllUsers();
   console.log(users);
-  
+
   // Controlla l'header Accept per determinare cosa vuole il client
   const acceptHeader = req.headers.accept || '';
-  
+
   if (acceptHeader.includes('application/json')) {
     // Se richiede JSON, restituisci JSON
     return res.json(users);
   } else {
     // Altrimenti serve la pagina HTML
-    return res.render('admin/users', { users });  }
+    return res.render('admin/users', { users });
+  }
 });
 
 
 // Start server
 const port = 3000;
-app.listen(port, () => console.log("Server started on port ${port}"));
+app.listen(port, () => console.log(`Server started on port ${port}`));
 
 
 /**
