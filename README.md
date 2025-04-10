@@ -11,21 +11,37 @@ comunicazione fluida con i propri fattorini, ottimizzando l'intero processo di c
 - **Competitor:** GloriaFood, MenuDrive,Slice,Toast,Uber Eats, Just Eat, Deliveroo, Glovo, Zapiet, DoorDash, Tiller, Gus, Speedline ,Shipday, Onfleet
 - **Timestamp:** 1726737736507
 
-## Requisiti di avvio
-- Docker Desktop
+## Installazione da Docker Hub
+Questo repository contiene il codice e le istruzioni per configurare e utilizzare l'immagine Docker.
 
-## Installazione di Docker
-1. Visita il sito ufficiale di Docker: [Docker Website](https://www.docker.com).
-2. Scarica Docker Desktop per Windows: **"Download for Windows - AMD64"**.
-3. Segui le istruzioni per completare l'installazione.
-4. Accedi o crea un account Docker.
+#### Requisiti
+1. **Installa Docker:**  
+   Assicurati di avere installato una versione funzionante di *Docker* (Docker Desktop o Docker Engine).  
+   Puoi scaricarlo [qui](https://www.docker.com/products/docker-desktop).
 
-## Istruzioni per l'Avvio
-1. Avvia **Docker Desktop**.
-2. Scarica il progetto da **GitHub** ed estrai il contenuto della cartella **zip**.
-3. All'interno della cartella principale, crea un file denominato **.env**.
-4. Esegui il file **Setup.bat** con un doppio clic e attendi il completamento del processo, seguendo le eventuali istruzioni visualizzate nel terminale.
-5. Apri un browser e inserisci nella barra degli indirizzi: `http://localhost:3000`.
+#### Informazioni sull'immagine Docker
+L'immagine ufficiale del progetto PonyGo è ospitata su Docker Hub:
+- **Docker Hub Username:** `fabioc9`
+- **Link Docker Hub:** `https://hub.docker.com/r/fabioc9/ponygo`
+- **Immagine:** `fabioc9/ponygo:latest`
+
+#### Istruzioni per l'uso
+
+1. **Scarica l'immagine:**
+
+   ```bash
+   docker pull fabioc9/ponygo:latest
+   ```
+
+2. Avvia il container sostituendo, se necessario, le variabili d'ambiente con i valori richiesti:
+   ```bash
+   docker run -d -p 3000:3000 --name ponygo_container -e API_KEY=YOUR_API_KEY fabioc9/ponygo:latest
+   ```
+3. Accedi all'applicazione:
+   Una volta avviato il container, puoi accedere all'applicazione tramite il seguente URL:
+   ```bash
+   http://localhost:3000
+   ```
 
 ## Credenziali di Accesso
 
