@@ -178,12 +178,17 @@ app.get('/home', (req, res) => {
   if (!req.session.loggedin) {
     return res.redirect('/frontend/login.html');
   }
-
   if (req.session.role === 'admin') {
     res.render('admin/homea', {
       name: req.session.name,
       role: req.session.role,
       message: req.session.message || ''
+    });
+  } else if (req.session.role === 'pizzaiolo') {
+    res.render('pizzaiolo/homep', {
+      name: req.session.name,
+      role: req.session.role,
+      message: `Bentornato, ${req.session.name}!`
     });
   } else {
     res.render('home', {
@@ -196,6 +201,7 @@ app.get('/home', (req, res) => {
 
 // API endpoint to get all users 
 // Vista HBS per mostrare utenti
+/*
 app.get('/admin/users/view', (req, res) => {
   if (!req.session.loggedin || req.session.role !== 'admin') {
     return res.redirect('/');
@@ -207,6 +213,7 @@ app.get('/admin/users/view', (req, res) => {
   // Renderizza la pagina users.hbs e passa i dati degli utenti
   res.render('admin/users', { users });
 });
+*/
 
 // Endpoint  per admin/users(admin only)
 app.get('/admin/users', (req, res) => {
@@ -229,6 +236,108 @@ app.get('/admin/users', (req, res) => {
     return res.render('admin/users', { users });
   }
 });
+
+//---------------------------------- MIDDLEWARE PER CONTROLLARE I RUOLI ----------------------------------
+function requirePizzaiolo(req, res, next) {
+  if (!req.session.loggedin || req.session.role !== 'pizzaiolo') {
+    return res.status(403).render('error', { message: 'Accesso riservato ai pizzaioli.' });
+  }
+  next();
+}
+function requireUser(req, res, next) {
+  if (req.session && req.session.role === 'user') {
+    return next();
+  } else {
+    return res.redirect('/login'); // o res.status(403).send('Forbidden');
+  }
+}
+
+//--------------------------------------------------------------ENDPOINT GESTIONE ORDINI--------------------------------------------------------------
+// 1. Aggiungi un ordine
+app.post('/pizzaiolo/orders', requirePizzaiolo, (req, res) => {
+  const { customer, pizza, quantity, notes, address } = req.body;
+  if (!customer || !pizza || !quantity || !address) {
+    return res.status(400).json({ message: 'Dati ordine mancanti' });
+  }
+  const order = db.createOrder({ customer, pizza, quantity, notes, address });
+  res.status(201).json(order);
+});
+
+// 2. Visualizza tutti gli ordini
+app.get('/pizzaiolo/orders', requirePizzaiolo, (req, res) => {
+  const orders = db.getAllOrders();
+  const acceptHeader = req.headers.accept || '';
+  if (acceptHeader.includes('application/json')) {
+    return res.json(orders);
+  }
+  // Renderizza la pagina con gli ordini
+  res.render('pizzaiolo/orders', { name: req.session.name, orders });
+});
+
+// 3. Cancella un ordine
+app.delete('/pizzaiolo/orders/:id', requirePizzaiolo, (req, res) => {
+  const { id } = req.params;
+  const success = db.deleteOrder(parseInt(id));
+  if (success) {
+    res.json({ message: 'Ordine cancellato' });
+  } else {
+    res.status(404).json({ message: 'Ordine non trovato' });
+  }
+});
+
+// 4. Modifica un ordine
+app.put('/pizzaiolo/orders/:id', requirePizzaiolo, (req, res) => {
+  const { id } = req.params;
+  const updates = req.body;
+  const order = db.updateOrder(parseInt(id), updates);
+  if (order) {
+    res.json(order);
+  } else {
+    res.status(404).json({ message: 'Ordine non trovato' });
+  }
+});
+
+// Pronto
+app.get('/pizzaiolo/orders/pronto', requirePizzaiolo, (req, res) => {
+  const orders = db.getAllOrders().filter(order => order.status === 'pronto');
+  res.render('pizzaiolo/orders_pronto', { name: req.session.name, orders });
+});
+
+// In preparazione
+app.get('/pizzaiolo/orders/inpreparazione', requirePizzaiolo, (req, res) => {
+  const orders = db.getAllOrders().filter(order => order.status === 'in preparazione');
+  res.render('pizzaiolo/orders_inpreparazione', { name: req.session.name, orders });
+});
+
+// Consegnato
+app.get('/pizzaiolo/orders/consegnato', requirePizzaiolo, (req, res) => {
+  const orders = db.getAllOrders().filter(order => order.status === 'consegnato');
+  res.render('pizzaiolo/orders_consegnato', { name: req.session.name, orders });
+});
+
+app.get('/user/orders', requireUser, (req, res) => {
+  // Se vuoi filtrare per utente:
+  // const orders = db.getAllOrders().filter(order => order.userId === req.session.userId);
+  // Se vuoi mostrare tutti:
+  const orders = db.getAllOrders();
+  res.render('ordersu', { name: req.session.name, orders });
+});
+
+hbs.registerHelper('eq', function (a, b) {
+  return a == b;
+});
+
+app.patch('/user/orders/:id/consegnato', requireUser, (req, res) => {
+  const id = parseInt(req.params.id);
+  const order = db.getOrderById(id);
+  if (!order) return res.status(404).json({ message: 'Ordine non trovato' });
+  if (order.status !== 'pronto') return res.status(400).json({ message: 'Ordine non pronto' });
+  // Se vuoi, controlla che sia assegnato a questo utente!
+  order.status = 'consegnato';
+  res.json({ message: 'Ordine marcato come consegnato' });
+});
+
+//--------------------------------------------------------------FINE ENDPOINT GESTIONE ORDINI--------------------------------------------------------------
 
 
 // Start server

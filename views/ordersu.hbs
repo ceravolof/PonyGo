@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+    <meta charset="UTF-8">
+    <title>I tuoi ordini da consegnare</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body class="bg-light">
+    <nav class="navbar navbar-dark bg-dark fixed-top">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">
+                <img src="../img/icon-pizza.png" alt="Logo" width="30" height="30" class="d-inline-block align-text-top">
+                PonyGo
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar"
+                aria-controls="offcanvasNavbar">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="offcanvas offcanvas-end text-bg-dark" tabindex="-1" id="offcanvasNavbar"
+                aria-labelledby="offcanvasNavbarLabel">
+                <div class="offcanvas-header">
+                    <h5 class="offcanvas-title" id="offcanvasNavbarLabel">Menu</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"
+                        aria-label="Close"></button>
+                </div>
+                <div class="offcanvas-body">
+                    <ul class="navbar-nav me-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" href="/home">Home</a>
+                        </li>
+
+                    </ul>
+                    <button class="btn btn-danger w-100" onclick="window.location.href='/logout'">Logout</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container text-center mt-5 pt-5">
+        <h2 class="mb-4">Ciao <span id="username">{{name}}</span>, ecco i tuoi ordini!</h2>
+    </div>
+
+    <div class="container mt-4">
+      <div class="row row-cols-1 row-cols-md-3 g-4">
+        {{#if orders.length}}
+          {{#each orders}}
+          <div class="col">
+            <div class="card shadow-sm h-100">
+              <div class="card-body d-flex flex-column">
+                <h5 class="card-title">{{customer}}</h5>
+                <h6 class="card-subtitle mb-2 text-muted">Ordine #{{id}}</h6>
+                <ul class="list-group list-group-flush mb-3">
+                  <li class="list-group-item"><strong>Pizza:</strong> {{pizza}}</li>
+                  <li class="list-group-item"><strong>Indirizzo:</strong> {{address}}</li>
+                  <li class="list-group-item"><strong>Quantità:</strong> {{quantity}}</li>
+                  <li class="list-group-item"><strong>Note:</strong> {{notes}}</li>
+                  <li class="list-group-item"><strong>Stato:</strong> <span id="order-status-{{id}}">{{status}}</span></li>
+                </ul>
+                <div class="mt-auto d-flex justify-content-end">
+                  {{#if (eq status "pronto")}}
+                  <button class="btn btn-success btn-sm" onclick="markConsegnato({{id}})">Consegnato</button>
+                  {{/if}}
+                </div>
+              </div>
+              <div class="card-footer text-body-secondary">
+                {{createdAt}}
+              </div>
+            </div>
+          </div>
+          {{/each}}
+        {{else}}
+          <div class="col-12">
+            <div class="alert alert-info mt-4" role="alert">
+              Nessun ordine disponibile al momento.
+            </div>
+          </div>
+        {{/if}}
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+      // Funzione che chiama la rotta PATCH per marcare come consegnato
+      async function markConsegnato(orderId) {
+        if (confirm('Confermi che questo ordine è stato consegnato?')) {
+          const res = await fetch('/user/orders/' + orderId + '/consegnato', {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+          });
+          if (res.ok) {
+            // Aggiorna subito lo stato nella card
+            document.getElementById('order-status-' + orderId).innerText = 'consegnato';
+            // Disabilita il bottone
+            event.target.disabled = true;
+            event.target.innerText = "Consegnato";
+          } else {
+            alert('Errore nel marcare come consegnato.');
+          }
+        }
+      }
+    </script>
+</body>
+</html>

@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gestione Ordini - Pizzaiolo</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body class="bg-light">
+
+  <!-- Navbar -->
+  <nav class="navbar navbar-dark bg-dark fixed-top">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#">
+        <img src="../../PonyGo/img/icon-pizza.png" alt="Logo" width="30" height="24"
+          class="d-inline-block align-text-top">
+        PonyGo
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar"
+        aria-controls="offcanvasNavbar">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="offcanvas offcanvas-end text-bg-dark" tabindex="-1" id="offcanvasNavbar"
+        aria-labelledby="offcanvasNavbarLabel">
+        <div class="offcanvas-header">
+          <h5 class="offcanvas-title" id="offcanvasNavbarLabel">Menu</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"
+            aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body">
+          <ul class="navbar-nav me-auto">
+            <li class="nav-item">
+              <a class="nav-link" href="/home">Home</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/pizzaiolo/orders/inpreparazione">In preparazione</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/pizzaiolo/orders/pronto">pronto</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/pizzaiolo/orders/consegnato">Consegnate</a>
+            </li>
+          </ul>
+          <button class="btn btn-danger w-100" onclick="window.location.href='/logout'">Logout</button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container pt-5" style="margin-top: 70px !important;">
+    <div class="text-center mb-4 mt-2 d-flex justify-content-between align-items-center">
+      <div></div>
+      <div>
+        <h2 class="mb-1">Welcome back pizzaiolo, <span id="username">{{name}}</span>!</h2>
+        <p class="mb-0">Gestisci gli ordini attivi direttamente da questa pagina.</p>
+      </div>
+      <button class="btn btn-success btn-lg" data-bs-toggle="modal" data-bs-target="#addOrderModal">
+        <i class="bi bi-plus-lg"></i> Aggiungi Ordine
+      </button>
+    </div>
+    
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+      {{#each orders}}
+      <div class="col">
+        <div class="card shadow-sm h-100">
+          <div class="card-body d-flex flex-column">
+            <h5 class="card-title">{{customer}}</h5>
+            <h6 class="card-subtitle mb-2 text-muted">Ordine #{{id}}</h6>
+            <ul class="list-group list-group-flush mb-3">
+              <li class="list-group-item"><strong>Pizza:</strong> {{pizza}}</li>
+              <li class="list-group-item"><strong>Indirizzo:</strong> {{address}}</li>
+              <li class="list-group-item"><strong>Quantità:</strong> {{quantity}}</li>
+              <li class="list-group-item"><strong>Note:</strong> {{notes}}</li>
+              <li class="list-group-item"><strong>Stato:</strong> {{status}}</li>
+            </ul>
+            <div class="mt-auto d-flex justify-content-between">
+              <button class="btn btn-danger btn-sm" onclick="deleteOrder({{id}})">Elimina</button>
+              <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#editModal"
+                onclick="populateModal({{id}}, '{{customer}}', '{{pizza}}', {{quantity}}, '{{notes}}', '{{address}}', '{{status}}')">Modifica</button>
+            </div>
+          </div>
+          <div class="card-footer text-body-secondary">
+            {{createdAt}}
+          </div>
+        </div>
+      </div>
+      {{/each}}
+    </div>
+  </div>
+
+  <!-- Modal per aggiungere ordine -->
+  <div class="modal fade" id="addOrderModal" tabindex="-1" aria-labelledby="addOrderModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <form id="addOrderForm" class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="addOrderModalLabel">Aggiungi Nuovo Ordine</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Chiudi"></button>
+        </div>
+        <div class="modal-body">
+          <div class="mb-3">
+            <label for="addCustomer" class="form-label">Cliente</label>
+            <input type="text" class="form-control" id="addCustomer" name="customer" required>
+          </div>
+          <div class="mb-3">
+            <label for="addAddress" class="form-label">Indirizzo</label>
+            <input type="text" class="form-control" id="addAddress" name="address" required>
+          </div>
+          <div class="mb-3">
+            <label for="addPizza" class="form-label">Pizza</label>
+            <input type="text" class="form-control" id="addPizza" name="pizza" required>
+          </div>
+          <div class="mb-3">
+            <label for="addQuantity" class="form-label">Quantità</label>
+            <input type="number" class="form-control" id="addQuantity" name="quantity" required min="1" value="1">
+          </div>
+          <div class="mb-3">
+            <label for="addNotes" class="form-label">Note</label>
+            <input type="text" class="form-control" id="addNotes" name="notes">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annulla</button>
+          <button type="submit" class="btn btn-success">Aggiungi Ordine</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal per modifica ordine -->
+  <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <form id="editOrderForm" class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="editModalLabel">Modifica Ordine</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Chiudi"></button>
+        </div>
+        <div class="modal-body">
+          <input type="hidden" id="editOrderId" name="id">
+          <div class="mb-3">
+            <label for="editCustomer" class="form-label">Cliente</label>
+            <input type="text" class="form-control" id="editCustomer" name="customer" required>
+          </div>
+          <div class="mb-3">
+            <label for="editAddress" class="form-label">Indirizzo</label>
+            <input type="text" class="form-control" id="editAddress" name="address" required>
+          </div>
+          <div class="mb-3">
+            <label for="editPizza" class="form-label">Pizza</label>
+            <input type="text" class="form-control" id="editPizza" name="pizza" required>
+          </div>
+          <div class="mb-3">
+            <label for="editQuantity" class="form-label">Quantità</label>
+            <input type="number" class="form-control" id="editQuantity" name="quantity" required min="1">
+          </div>
+          <div class="mb-3">
+            <label for="editNotes" class="form-label">Note</label>
+            <input type="text" class="form-control" id="editNotes" name="notes">
+          </div>
+          <div class="mb-3">
+            <label for="editStatus" class="form-label">Stato</label>
+            <select class="form-select" id="editStatus" name="status">
+              <option value="in preparazione">In preparazione</option>
+              <option value="pronto">Pronto</option>
+              <option value="consegnato">Consegnato</option>
+            </select>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annulla</button>
+          <button type="submit" class="btn btn-primary">Salva modifiche</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- Bootstrap Icons CDN per icona plus -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+  <script>
+    // Popola il modal con i dati dell'ordine selezionato
+    function populateModal(id, customer, pizza, quantity, notes, address, status) {
+      document.getElementById('editOrderId').value = id;
+      document.getElementById('editCustomer').value = customer;
+      document.getElementById('editPizza').value = pizza;
+      document.getElementById('editQuantity').value = quantity;
+      document.getElementById('editNotes').value = notes;
+      document.getElementById('editAddress').value = address;
+      document.getElementById('editStatus').value = status;
+    }
+
+    // Gestisce la modifica dell'ordine (PUT AJAX)
+    document.getElementById('editOrderForm').addEventListener('submit', async function (e) {
+      e.preventDefault();
+      const id = document.getElementById('editOrderId').value;
+      const data = {
+        customer: document.getElementById('editCustomer').value,
+        address: document.getElementById('editAddress').value,
+        pizza: document.getElementById('editPizza').value,
+        quantity: Number(document.getElementById('editQuantity').value),
+        notes: document.getElementById('editNotes').value,
+        status: document.getElementById('editStatus').value
+      };
+      const res = await fetch(`/pizzaiolo/orders/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      });
+      if (res.ok) {
+        location.reload();
+      } else {
+        alert('Errore nella modifica dell\'ordine');
+      }
+    });
+
+    // Gestisce l'eliminazione (DELETE AJAX)
+    async function deleteOrder(id) {
+      if (confirm('Sei sicuro di voler eliminare questo ordine?')) {
+        const res = await fetch(`/pizzaiolo/orders/${id}`, { method: 'DELETE' });
+        if (res.ok) {
+          location.reload();
+        } else {
+          alert('Errore nell\'eliminazione dell\'ordine');
+        }
+      }
+    }
+
+    // Gestisce l'aggiunta di un ordine (POST AJAX)
+    document.getElementById('addOrderForm').addEventListener('submit', async function (e) {
+      e.preventDefault();
+      const data = {
+        customer: document.getElementById('addCustomer').value,
+        address: document.getElementById('addAddress').value,
+        pizza: document.getElementById('addPizza').value,
+        quantity: Number(document.getElementById('addQuantity').value),
+        notes: document.getElementById('addNotes').value
+      };
+      const res = await fetch('/pizzaiolo/orders', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      });
+      if (res.ok) {
+        location.reload();
+      } else {
+        alert('Errore nell\'aggiunta dell\'ordine');
+      }
+    });
+  </script>
+</body>
+
+</html>
