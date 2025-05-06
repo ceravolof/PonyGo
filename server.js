@@ -309,9 +309,28 @@ app.get('/pizzaiolo/orders/inpreparazione', requirePizzaiolo, (req, res) => {
   res.render('pizzaiolo/orders_inpreparazione', { name: req.session.name, orders });
 });
 
-// Consegnato
+// Consegnato - Formatta gli ordini per mostrare il fattorino
 app.get('/pizzaiolo/orders/consegnato', requirePizzaiolo, (req, res) => {
-  const orders = db.getAllOrders().filter(order => order.status === 'consegnato');
+  const ordersRaw = db.getAllOrders().filter(order => order.status === 'consegnato');
+  
+  // Formatta gli ordini per aggiungere informazioni sul fattorino
+  const orders = ordersRaw.map(order => {
+    const formatted = {...order};
+    
+    // Aggiungi informazione su chi ha consegnato (se disponibile)
+    if (order.deliveredBy) {
+      formatted.deliveredByName = order.deliveredBy.name;
+      formatted.deliveredById = order.deliveredBy.id;
+      formatted.deliveredAtFormatted = order.deliveredAt ? 
+        new Date(order.deliveredAt).toLocaleString('it-IT') : 'Data non disponibile';
+    } else {
+      formatted.deliveredByName = 'Non specificato';
+      formatted.deliveredAtFormatted = 'Data non disponibile';
+    }
+    
+    return formatted;
+  });
+  
   res.render('pizzaiolo/orders_consegnato', { name: req.session.name, orders });
 });
 
@@ -319,7 +338,9 @@ app.get('/user/orders', requireUser, (req, res) => {
   // Se vuoi filtrare per utente:
   // const orders = db.getAllOrders().filter(order => order.userId === req.session.userId);
   // Se vuoi mostrare tutti:
-  const orders = db.getAllOrders();
+  const allOrders = db.getAllOrders();
+  // Filtra solo gli ordini NON consegnati (che hanno stato diverso da "consegnato")
+  const orders = allOrders.filter(order => order.status !== "consegnato");
   res.render('ordersu', { name: req.session.name, orders });
 });
 
@@ -332,11 +353,37 @@ app.patch('/user/orders/:id/consegnato', requireUser, (req, res) => {
   const order = db.getOrderById(id);
   if (!order) return res.status(404).json({ message: 'Ordine non trovato' });
   if (order.status !== 'pronto') return res.status(400).json({ message: 'Ordine non pronto' });
-  // Se vuoi, controlla che sia assegnato a questo utente!
+  
+  // Salva chi ha consegnato l'ordine
   order.status = 'consegnato';
+  order.deliveredBy = {
+    id: req.session.userId,
+    name: req.session.name
+  };
+  order.deliveredAt = new Date().toISOString();
+  
   res.json({ message: 'Ordine marcato come consegnato' });
 });
 
+app.get('/user/delivered-orders', requireUser, (req, res) => {
+  const allOrders = db.getAllOrders();
+  
+  // Filtra solo gli ordini consegnati da questo utente
+  const deliveredOrders = allOrders.filter(order => 
+    order.status === "consegnato" && 
+    order.deliveredBy && 
+    order.deliveredBy.id === req.session.userId
+  );
+  
+  res.render('delivered', { 
+    name: req.session.name, 
+    orders: deliveredOrders,
+    formattedOrders: deliveredOrders.map(order => ({
+      ...order,
+      deliveredDate: new Date(order.deliveredAt).toLocaleString('it-IT')
+    }))
+  });
+});
 //--------------------------------------------------------------FINE ENDPOINT GESTIONE ORDINI--------------------------------------------------------------
 
 

@@ -32,6 +32,12 @@
                         <li class="nav-item">
                             <a class="nav-link" href="/home">Home</a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link active" href="/user/orders">Ordini da consegnare</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/user/delivered-orders">Miei ordini consegnati</a>
+                        </li>
 
                     </ul>
                     <button class="btn btn-danger w-100" onclick="window.location.href='/logout'">Logout</button>
@@ -46,6 +52,7 @@
 
     <div class="d-grid gap-3 col-6 mx-auto mt-4">
         <button class="btn btn-success" onclick="window.location.href='/user/orders'">Visualizza i miei ordini</button>
+        <button class="btn btn-info" onclick="window.location.href='/user/delivered-orders'">Visualizza miei ordini consegnati</button>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
