@@ -7,18 +7,30 @@ const mock = require('./DBMock.js'); // Mock database
 const db = new mock(); // Replace with real DB logic in production
 const swaggerJsdoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
+const http = require('http'); // Aggiungi questa riga
 
 const app = express();
+const server = http.createServer(app); // Crea un server HTTP
+const io = require('socket.io')(server); // Inizializza Socket.IO
 
 require('dotenv').config();
 
+// Variabili globali per tracciare connessioni attive
+const activeConnections = new Map(); // Map di socket ID => info utente
+
 // Session setup
-app.use(session({
+const sessionMiddleware = session({
   secret: process.env.SESSION_SECRET || 'default_secret',
   resave: false,
   saveUninitialized: true,
-  cookie: { secure: false } // Secure: true in production with HTTPS
-}));
+  cookie: { secure: false }
+});
+
+app.use(sessionMiddleware);
+
+io.use((socket, next) => {
+  sessionMiddleware(socket.request, {}, next);
+});
 
 app.use((req, res, next) => {
   res.setHeader('Cross-Origin-Opener-Policy', 'same-origin-allow-popups');
@@ -31,6 +43,56 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.set('view engine', 'hbs');
 app.set('views', path.join(__dirname, 'views'));
 app.use('/static', express.static(path.join(__dirname, 'frontend')));
+
+// Socket.IO connection handler
+io.on('connection', (socket) => {
+  const session = socket.request.session;
+  console.log('Nuova connessione WebSocket:', socket.id);
+
+  // Verifica se l'utente è loggato
+  if (session && session.loggedin) {
+    // Aggiungi l'utente alla mappa di connessioni attive
+    activeConnections.set(socket.id, {
+      id: session.userId,
+      username: session.name, 
+      role: session.role,
+      connectedAt: new Date(),
+      socketId: socket.id
+    });
+
+    // Invia aggiornamento agli admin
+    updateAdminsWithActiveUsers();
+  }
+
+  // Gestisci disconnessione
+  socket.on('disconnect', () => {
+    console.log('Utente disconnesso:', socket.id);
+    // Rimuovi dalla mappa
+    activeConnections.delete(socket.id);
+    // Invia aggiornamento agli admin
+    updateAdminsWithActiveUsers();
+  });
+
+  // L'admin richiede esplicitamente la lista utenti
+  socket.on('requestActiveUsers', () => {
+    const session = socket.request.session;
+    if (session && session.role === 'admin') {
+      socket.emit('activeUsers', Array.from(activeConnections.values()));
+    }
+  });
+});
+
+// Funzione per inviare aggiornamenti a tutti gli admin
+function updateAdminsWithActiveUsers() {
+  const activeUsers = Array.from(activeConnections.values());
+  
+  // Invia l'aggiornamento a tutti gli admin connessi
+  for (const [socketId, userInfo] of activeConnections.entries()) {
+    if (userInfo.role === 'admin') {
+      io.to(socketId).emit('activeUsers', activeUsers);
+    }
+  }
+}
 
 // Swagger setup
 const swaggerOptions = {
@@ -157,6 +219,7 @@ app.post('/login', (req, res) => {
     req.session.loggedin = true;
     req.session.name = user.username;
     req.session.role = user.type;
+    req.session.userId = user.id; // Aggiungi questa linea
     res.redirect('/home');
   } else {
     res.render('error', { message: 'Incorrect email or password!' });
@@ -182,7 +245,8 @@ app.get('/home', (req, res) => {
     res.render('admin/homea', {
       name: req.session.name,
       role: req.session.role,
-      message: req.session.message || ''
+      message: req.session.message || '',
+      socketEnabled: true // Flag per abilitare WebSocket nella vista
     });
   } else if (req.session.role === 'pizzaiolo') {
     res.render('pizzaiolo/homep', {
@@ -223,7 +287,6 @@ app.get('/admin/users', (req, res) => {
 
   // Ottieni la lista degli utenti dal database
   const users = db.getAllUsers();
-  console.log(users);
 
   // Controlla l'header Accept per determinare cosa vuole il client
   const acceptHeader = req.headers.accept || '';
@@ -236,6 +299,78 @@ app.get('/admin/users', (req, res) => {
     return res.render('admin/users', { users });
   }
 });
+
+// Crea un nuovo utente
+app.post('/admin/users', (req, res) => {
+  if (!req.session.loggedin || req.session.role !== 'admin') {
+    return res.status(403).json({ message: 'Accesso negato' });
+  }
+  
+  const { email, username, password, type } = req.body;
+  if (!email || !username || !password || !type) {
+    return res.status(400).json({ message: 'Tutti i campi sono obbligatori' });
+  }
+  
+  try {
+    const user = db.createUser({ email, username, password, type });
+    res.status(201).json(user);
+  } catch (err) {
+    console.error('Errore creazione utente:', err);
+    res.status(400).json({ message: err.message });
+  }
+});
+
+// Aggiorna un utente esistente
+app.put('/admin/users/:id', (req, res) => {
+  if (!req.session.loggedin || req.session.role !== 'admin') {
+    return res.status(403).json({ message: 'Accesso negato' });
+  }
+  
+  const id = parseInt(req.params.id);
+  const { username, email, password, type } = req.body;
+  
+  try {
+    const updates = {};
+    if (username) updates.username = username;
+    if (email) updates.email = email;
+    if (password) updates.password = password;
+    if (type) updates.type = type;
+    
+    const updatedUser = db.updateUser(id, updates);
+    if (!updatedUser) {
+      return res.status(404).json({ message: 'Utente non trovato' });
+    }
+    
+    // Rimuovi password dalla risposta per sicurezza
+    const { password: _, ...userWithoutPassword } = updatedUser;
+    res.json(userWithoutPassword);
+  } catch (err) {
+    console.error('Errore aggiornamento utente:', err);
+    res.status(400).json({ message: err.message });
+  }
+});
+
+// Elimina un utente
+app.delete('/admin/users/:id', (req, res) => {
+  if (!req.session.loggedin || req.session.role !== 'admin') {
+    return res.status(403).json({ message: 'Accesso negato' });
+  }
+  
+  const id = parseInt(req.params.id);
+  
+  // Impedisci all'utente di eliminare se stesso
+  if (id === req.session.userId) {
+    return res.status(400).json({ message: 'Non puoi eliminare il tuo account' });
+  }
+  
+  const success = db.deleteUser(id);
+  if (!success) {
+    return res.status(404).json({ message: 'Utente non trovato' });
+  }
+  
+  res.json({ message: 'Utente eliminato con successo' });
+});
+
 
 //---------------------------------- MIDDLEWARE PER CONTROLLARE I RUOLI ----------------------------------
 function requirePizzaiolo(req, res, next) {
@@ -389,7 +524,8 @@ app.get('/user/delivered-orders', requireUser, (req, res) => {
 
 // Start server
 const port = 3000;
-app.listen(port, () => console.log(`Server started on port ${port}`));
+//app
+server.listen(port, () => console.log(`Server started on port ${port}`));
 
 
 /**
