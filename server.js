@@ -43,6 +43,8 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.set('view engine', 'hbs');
 app.set('views', path.join(__dirname, 'views'));
 app.use('/static', express.static(path.join(__dirname, 'frontend')));
+// Aggiungi questa route specifica per la directory img
+app.use('/img', express.static(path.join(__dirname, 'img')));
 
 // Socket.IO connection handler
 io.on('connection', (socket) => {
