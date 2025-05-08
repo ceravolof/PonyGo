@@ -49,7 +49,11 @@ L'immagine ufficiale del progetto PonyGo è ospitata su Docker Hub:
 - **Email**: `admin@example.com`
 - **Password**: `123456`
 
-### Utente Standard
+### Pizzaiolo
+- **Email**: `pizzaiolo@example.com`
+- **Password**: `pizzapass`
+
+### Utente Pony
 - **Email**: `user@example.com`
 - **Password**: `abcdef`
 
