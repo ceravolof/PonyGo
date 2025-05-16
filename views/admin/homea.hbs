@@ -3,24 +3,44 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard</title>
+    <title>Admin Dashboard - PonyGo</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
     <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
         .user-card {
             transition: all 0.3s ease;
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
         }
+        
         .user-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.15);
         }
+        
         .user-icon {
             font-size: 1.5rem;
             margin-right: 10px;
         }
+        
         .admin-icon { color: #dc3545; }
         .pizzaiolo-icon { color: #fd7e14; }
         .user-icon { color: #0d6efd; }
+        
         .online-indicator {
             width: 10px;
             height: 10px;
@@ -28,47 +48,115 @@
             background-color: #28a745;
             display: inline-block;
             margin-right: 5px;
+            box-shadow: 0 0 10px #28a745;
+            animation: pulse 2s infinite;
         }
+        
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(40, 167, 69, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(40, 167, 69, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(40, 167, 69, 0); }
+        }
+        
         .time-connected {
             font-size: 0.8rem;
             color: #6c757d;
+        }
+        
+        .stat-card {
+            border: none;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            height: 100%;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+        }
+        
+        .stat-icon {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .nav-link {
+            font-weight: 500;
+            border-radius: 8px;
+            padding: 10px 15px;
+            margin: 5px 0;
+            transition: all 0.2s ease;
+        }
+        
+        .nav-link:hover,
+        .nav-link.active {
+            background-color: rgba(255, 255, 255, 0.1);
+            transform: translateX(5px);
+        }
+        
+        .nav-link.active {
+            font-weight: 600;
+            box-shadow: -3px 0 0 #fff inset;
+        }
+        
+        .offcanvas-body .nav-link i {
+            margin-right: 10px;
+            width: 20px;
+            text-align: center;
         }
     </style>
 </head>
 <body>
     <nav class="navbar navbar-dark bg-dark fixed-top">
         <div class="container-fluid">
-            <a class="navbar-brand" href="#">Admin Dashboard</a>
+            <a class="navbar-brand" href="#">
+                <i class="bi bi-bicycle text-warning"></i> PonyGo Admin
+            </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="offcanvas offcanvas-end text-bg-dark" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
                 <div class="offcanvas-header">
-                    <h5 class="offcanvas-title" id="offcanvasNavbarLabel">Menu</h5>
+                    <h5 class="offcanvas-title" id="offcanvasNavbarLabel">
+                        <i class="bi bi-menu-button-wide-fill me-2"></i> Menu
+                    </h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
                 </div>
                 <div class="offcanvas-body">
                     <ul class="navbar-nav me-auto">
                         <li class="nav-item">
-                            <a class="nav-link active" href="/home">Home</a>
+                            <a class="nav-link active" href="/home">
+                                <i class="bi bi-house-door-fill"></i> Home
+                            </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="/admin/users">Gestisci Utenti</a>
+                            <a class="nav-link" href="/admin/users">
+                                <i class="bi bi-people-fill"></i> Gestisci Utenti
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/swag">
+                                <i class="bi bi-file-earmark-code-fill"></i> Swagger API
+                            </a>
                         </li>
                     </ul>
-                    <button class="btn btn-danger w-100" onclick="window.location.href='/logout'">Logout</button>
+                    <button class="btn btn-danger w-100 mt-3" onclick="window.location.href='/logout'">
+                        <i class="bi bi-box-arrow-right me-2"></i> Logout
+                    </button>
                 </div>
             </div>
         </div>
     </nav>
 
     <div class="container mt-5 pt-5">
-        <div class="row mb-4">
+        <div class="row mb-4 align-items-center">
             <div class="col">
-                <h2>Benvenuto, {{name}}!</h2>
+                <h2 class="display-6">Benvenuto, <span class="text-primary">{{name}}</span>!</h2>
                 {{#if message}}
-                <div class="alert alert-success">
-                    {{message}}
+                <div class="alert alert-success d-flex align-items-center" role="alert">
+                    <i class="bi bi-check-circle-fill me-2"></i>
+                    <div>{{message}}</div>
                 </div>
                 {{/if}}
             </div>
@@ -99,13 +187,13 @@
         <div class="row">
             <div class="col-md-6 mb-4">
                 <div class="card shadow-sm h-100">
-                    <div class="card-header bg-success text-white">
+                    <div class="card-header bg-success text-white d-flex align-items-center">
                         <i class="bi bi-gear-fill me-2"></i>
-                        Amministrazione
+                        <span>Amministrazione</span>
                     </div>
                     <div class="card-body">
-                        <p>Gestisci gli utenti e le impostazioni della piattaforma.</p>
-                        <a href="/admin/users" class="btn btn-outline-success mt-2">
+                        <p>Gestisci gli utenti e le impostazioni della piattaforma PonyGo.</p>
+                        <a href="/admin/users" class="btn btn-success mt-2">
                             <i class="bi bi-person-gear me-2"></i>
                             Gestisci Utenti
                         </a>
@@ -115,13 +203,13 @@
             
             <div class="col-md-6 mb-4">
                 <div class="card shadow-sm h-100">
-                    <div class="card-header bg-info text-white">
+                    <div class="card-header bg-info text-white d-flex align-items-center">
                         <i class="bi bi-journal-code me-2"></i>
-                        API Documentation
+                        <span>API Documentation</span>
                     </div>
                     <div class="card-body">
                         <p>Esplora la documentazione delle API disponibili per gli sviluppatori.</p>
-                        <a href="/swag" class="btn btn-outline-info mt-2">
+                        <a href="/swag" class="btn btn-info text-white mt-2">
                             <i class="bi bi-file-earmark-code me-2"></i>
                             Swagger UI
                         </a>
@@ -143,6 +231,9 @@
         const activeUsersList = document.getElementById('activeUsersList');
         const usersCount = document.getElementById('usersCount');
         const noUsersMessage = document.getElementById('noUsersMessage');
+        const statsOrders = document.getElementById('statsOrders');
+        const statsDelivered = document.getElementById('statsDelivered');
+        const statsUsers = document.getElementById('statsUsers');
         
         // Formatta tempo di connessione
         function formatTimeConnected(connectedAt) {
@@ -206,15 +297,34 @@
             });
         }
         
+        // Richiedi statistiche dal server
+        function requestStats() {
+            socket.emit('requestStats');
+        }
+        
+        // Aggiorna le statistiche
+        function updateStats(stats) {
+            if (stats) {
+                statsOrders.textContent = stats.totalOrders || 0;
+                statsDelivered.textContent = stats.deliveredOrders || 0;
+                statsUsers.textContent = stats.totalUsers || 0;
+            }
+        }
+        
         // Ricevi aggiornamenti utenti dal server
         socket.on('activeUsers', updateUsersList);
         
-        // Richiedi lista utenti all'avvio
-        socket.emit('requestActiveUsers');
+        // Ricevi aggiornamenti statistiche
+        socket.on('statsUpdate', updateStats);
         
-        // Aggiorna il timer ogni 30 secondi
+        // Richiedi lista utenti e statistiche all'avvio
+        socket.emit('requestActiveUsers');
+        requestStats();
+        
+        // Aggiorna il timer e le statistiche ogni 30 secondi
         setInterval(() => {
             socket.emit('requestActiveUsers');
+            requestStats();
         }, 30000);
     </script>
 </body>

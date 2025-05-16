@@ -6,39 +6,101 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ordini Consegnati - Pizzaiolo</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
     <style>
-        .deliveredBy-badge {
-            background-color: #17a2b8;
-            color: white;
-            padding: 4px 8px;
-            border-radius: 20px;
-            font-size: 0.85em;
-        }
-        .search-container {
-            position: relative;
-            max-width: 500px;
-            margin: 0 auto 20px;
-        }
-        .search-container .form-control {
-            padding-left: 40px;
-            border-radius: 25px;
-        }
-        .search-container .bi-search {
-            position: absolute;
-            top: 10px;
-            left: 15px;
-            color: #6c757d;
-        }
+      body {
+        background-color: #f8f9fa;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      }
+      .navbar-brand {
+        font-weight: 700;
+        font-size: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .nav-link {
+        font-weight: 500;
+        position: relative;
+      }
+      .nav-link.active::after {
+        content: '';
+        position: absolute;
+        width: 100%;
+        height: 2px;
+        background-color: #ffffff;
+        bottom: 0;
+        left: 0;
+      }
+      .card {
+        border: none;
+        border-radius: 12px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        transition: all 0.3s ease;
+      }
+      .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.12);
+      }
+      .btn {
+        border-radius: 8px;
+        padding: 8px 16px;
+        font-weight: 500;
+      }
+      .main-header {
+        background-color: #ffffff;
+        padding: 20px;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        margin-bottom: 30px;
+      }
+      .status-badge {
+        font-size: 1.2rem;
+        padding: 10px 20px;
+        border-radius: 30px;
+        letter-spacing: 1px;
+      }
+      .count-badge {
+        width: 50px;
+        height: 50px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        border-radius: 50%;
+      }
+      .list-group-item strong {
+        color: #4361ee;
+      }
+      .empty-state {
+        text-align: center;
+        padding: 40px 0;
+      }
+      .empty-state i {
+        font-size: 4rem;
+        color: #d1d1d1;
+        margin-bottom: 15px;
+      }
+      .search-container {
+        background-color: white;
+        padding: 15px;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        margin-bottom: 20px;
+      }
+      .filter-container {
+        display: flex;
+        gap: 10px;
+      }
     </style>
 </head>
 
-<body class="bg-light">
+<body>
     <!-- Navbar -->
     <nav class="navbar navbar-dark bg-dark fixed-top">
         <div class="container-fluid">
             <a class="navbar-brand" href="#">
-                
-                PonyGo
+                <i class="bi bi-bicycle text-warning"></i> PonyGo
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar"
                 aria-controls="offcanvasNavbar">
@@ -47,137 +109,172 @@
             <div class="offcanvas offcanvas-end text-bg-dark" tabindex="-1" id="offcanvasNavbar"
                 aria-labelledby="offcanvasNavbarLabel">
                 <div class="offcanvas-header">
-                    <h5 class="offcanvas-title" id="offcanvasNavbarLabel">Menu</h5>
+                    <h5 class="offcanvas-title" id="offcanvasNavbarLabel">
+                      <i class="bi bi-menu-button-wide-fill me-2"></i> Menu
+                    </h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"
                         aria-label="Close"></button>
                 </div>
                 <div class="offcanvas-body">
                     <ul class="navbar-nav me-auto">
                         <li class="nav-item">
-                            <a class="nav-link" href="/home">Home</a>
+                            <a class="nav-link" href="/home">
+                              <i class="bi bi-house-door-fill me-2"></i> Home
+                            </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="/pizzaiolo/orders/inpreparazione">In preparazione</a>
+                            <a class="nav-link" href="/pizzaiolo/orders/inpreparazione">
+                              <i class="bi bi-hourglass-split me-2"></i> In preparazione
+                            </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="/pizzaiolo/orders/pronto">Pronto</a>
+                            <a class="nav-link" href="/pizzaiolo/orders/pronto">
+                              <i class="bi bi-check-circle-fill me-2"></i> Pronto
+                            </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link active" aria-current="page" href="/pizzaiolo/orders/consegnato">Consegnate</a>
+                            <a class="nav-link active" aria-current="page" href="/pizzaiolo/orders/consegnato">
+                              <i class="bi bi-truck me-2"></i> Consegnate
+                            </a>
                         </li>
                     </ul>
-                    <button class="btn btn-danger w-100" onclick="window.location.href='/logout'">Logout</button>
+                    <button class="btn btn-danger w-100 mt-3" onclick="window.location.href='/logout'">
+                      <i class="bi bi-box-arrow-right me-2"></i> Logout
+                    </button>
                 </div>
             </div>
         </div>
     </nav>
 
-    <div class="container text-center mt-5 pt-5">
-        <div class="d-flex justify-content-between align-items-center mb-2">
-            <h2 class="mb-3"><span class="badge bg-primary">CONSEGNATI</span></h2>
-            <span class="badge bg-primary fs-5">{{orders.length}}</span>
+    <div class="container pt-5" style="margin-top: 70px !important;">
+      <div class="welcome-section mb-4 mt-2">
+        <div class="d-flex justify-content-between align-items-center">
+          <h2 class="mb-0">Ordini Consegnati</h2>
+          <div class="d-flex gap-2">
+            <select class="form-select" id="fattorinoFilter" style="width: auto;">
+              <option value="all">Tutti i fattorini</option>
+              {{#each user}}
+                <option value="{{this}}">{{this}}</option>
+              {{/each}}
+            </select>
+          </div>
         </div>
-        
-        <!-- Barra di ricerca per fattorino -->
-        <div class="search-container mb-4">
-            <i class="bi bi-search"></i>
-            <input type="text" class="form-control shadow-sm" id="searchInput" placeholder="Cerca per nome del fattorino...">
-        </div>
-    </div>
-
-    <div class="container mt-3">
-      <div class="row row-cols-1 row-cols-md-3 g-4" id="ordersContainer">
+        <p class="mb-0 text-muted text-center mt-2">Visualizza lo storico degli ordini che sono stati consegnati.</p>
+      </div>
+      
+      <div class="row row-cols-1 row-cols-md-3 g-4">
         {{#if orders.length}}
           {{#each orders}}
-          <div class="col order-card" data-fattorino="{{deliveredByName}}">
-            <div class="card shadow-sm h-100">
-              <div class="card-header bg-info text-white">
-                Consegnato da: <span class="fw-bold">{{deliveredByName}}</span>
+          <div class="col" id="order-{{id}}" data-fattorino="{{deliveryPerson}}">
+            <div class="card h-100">
+              <div class="card-header bg-success bg-opacity-10 d-flex align-items-center py-2">
+                <i class="bi bi-person-circle text-success me-2"></i>
+                <span><strong>Consegnato da:</strong> {{deliveredByName}}</span>
               </div>
               <div class="card-body d-flex flex-column">
-                <h5 class="card-title">{{customer}}</h5>
-                <h6 class="card-subtitle mb-2 text-muted">Ordine #{{id}}</h6>
+                <h5 class="card-title d-flex align-items-center gap-2">
+                  <i class="bi bi-person-circle text-primary"></i> {{customer}}
+                </h5>
+                <h6 class="card-subtitle mb-3 text-muted">Ordine #{{id}}</h6>
                 <ul class="list-group list-group-flush mb-3">
-                  <li class="list-group-item"><strong>Pizza:</strong> {{pizza}}</li>
-                  <li class="list-group-item"><strong>Indirizzo:</strong> {{address}}</li>
-                  <li class="list-group-item"><strong>Quantità:</strong> {{quantity}}</li>
-                  <li class="list-group-item"><strong>Note:</strong> {{notes}}</li>
-                  <li class="list-group-item"><strong>Data consegna:</strong> {{deliveredAtFormatted}}</li>
+                  <li class="list-group-item d-flex align-items-center gap-2">
+                    <i class="bi bi-pizza text-danger"></i> <strong>Pizza:</strong> {{pizza}}
+                  </li>
+                  <li class="list-group-item d-flex align-items-center gap-2">
+                    <i class="bi bi-geo-alt-fill text-success"></i> <strong>Indirizzo:</strong> {{address}}
+                  </li>
+                  <li class="list-group-item d-flex align-items-center gap-2">
+                    <i class="bi bi-123 text-warning"></i> <strong>Quantità:</strong> {{quantity}}
+                  </li>
+                  <li class="list-group-item d-flex align-items-center gap-2">
+                    <i class="bi bi-chat-left-text text-info"></i> <strong>Note:</strong> {{notes}}
+                  </li>
+                  <li class="list-group-item d-flex align-items-center gap-2">
+                    <i class="bi bi-info-circle text-primary"></i> <strong>Stato:</strong> 
+                    <span class="badge bg-success rounded-pill">
+                      {{status}}
+                    </span>
+                  </li>
+                  {{#if deliveredAtFormatted}}
+                  <li class="list-group-item d-flex align-items-center gap-2">
+                    <i class="bi bi-calendar-check text-success"></i> <strong>Consegnato il:</strong> {{deliveredAtFormatted}}
+                  </li>
+                  {{/if}}
                 </ul>
-                <div class="mt-auto d-flex justify-content-between">
-                  <button class="btn btn-danger btn-sm" onclick="deleteOrder({{id}})">Elimina</button>
-                  <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#editModal"
-                    onclick="populateModal({{id}}, '{{customer}}', '{{pizza}}', {{quantity}}, '{{notes}}', '{{address}}', '{{status}}')">Modifica</button>
-                </div>
               </div>
-              <div class="card-footer text-body-secondary">
-                Ordine creato: {{createdAt}}
+              <div class="card-footer text-body-secondary d-flex align-items-center gap-2">
+                <i class="bi bi-calendar3"></i> {{createdAt}}
               </div>
             </div>
           </div>
           {{/each}}
         {{else}}
           <div class="col-12">
-            <div class="alert alert-info mt-4" role="alert">
-              Nessun ordine consegnato al momento.
+            <div class="empty-state">
+              <i class="bi bi-inbox"></i>
+              <h3>Nessun ordine consegnato</h3>
+              <p>Non ci sono ancora ordini consegnati da visualizzare.</p>
             </div>
           </div>
         {{/if}}
       </div>
     </div>
 
-    <!-- Bootstrap Icons -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
-    
-    <!-- Modal Modifica (puoi riutilizzare quello che hai già nella tua app) -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
     <script>
-      // Funzione di ricerca per fattorino
-      document.getElementById('searchInput').addEventListener('input', function() {
-        const searchTerm = this.value.toLowerCase().trim();
-        const cards = document.querySelectorAll('.order-card');
+      const socket = io();
+      
+      socket.on('order-delivered', (order) => {
+        // Se l'ordine è stato appena consegnato, ricarichiamo la pagina per visualizzarlo
+        location.reload();
+      });
+      
+      // Filtro per fattorino
+      document.getElementById('fattorinoFilter').addEventListener('change', function(e) {
+        filterCards();
+      });
+      
+      // Funzione per filtrare le card solo per fattorino
+      function filterCards() {
+        const fattorinoFilter = document.getElementById('fattorinoFilter').value;
+        const cards = document.querySelectorAll('.col[id^="order-"]');
         
         cards.forEach(card => {
-          const fattorinoName = card.dataset.fattorino.toLowerCase();
+          const fattorino = card.dataset.fattorino;
           
-          if (searchTerm === '' || fattorinoName.includes(searchTerm)) {
-            card.style.display = 'block';
+          // Controllo del fattorino
+          const matchesFattorino = (fattorinoFilter === 'all' || fattorino === fattorinoFilter);
+          
+          // Mostra la card solo se corrisponde al filtro
+          if (matchesFattorino) {
+            card.style.display = '';
           } else {
             card.style.display = 'none';
           }
         });
         
-        // Mostra messaggi se non ci sono risultati
-        const visibleCards = document.querySelectorAll('.order-card[style="display: block"]');
-        const noResultsMessage = document.getElementById('noResultsMessage');
+        // Verifica se ci sono card visibili dopo il filtraggio
+        const visibleCards = document.querySelectorAll('.col[id^="order-"]:not([style*="display: none"])');
+        const emptyState = document.querySelector('.empty-state');
         
-        if (visibleCards.length === 0 && searchTerm !== '') {
-          // Se non esisteva già, crea un messaggio "nessun risultato"
-          if (!noResultsMessage) {
-            const container = document.getElementById('ordersContainer');
-            const messageDiv = document.createElement('div');
-            messageDiv.id = 'noResultsMessage';
-            messageDiv.className = 'col-12';
-            messageDiv.innerHTML = `
-              <div class="alert alert-warning mt-4" role="alert">
-                Nessun ordine trovato per il fattorino "${searchTerm}"
-              </div>
-            `;
-            container.appendChild(messageDiv);
-          }
-        } else if (noResultsMessage) {
-          // Rimuovi il messaggio se ci sono risultati o la ricerca è vuota
-          noResultsMessage.remove();
+        // Se non ci sono card visibili, mostra un messaggio
+        if (visibleCards.length === 0 && !emptyState) {
+          const container = document.querySelector('.row.row-cols-1');
+          const noResults = document.createElement('div');
+          noResults.className = 'col-12 text-center py-5';
+          noResults.id = 'no-results';
+          noResults.innerHTML = `
+            <i class="bi bi-filter-circle text-muted" style="font-size: 2rem;"></i>
+            <p class="mt-3 text-muted">Nessun ordine trovato per questo fattorino.</p>
+          `;
+          container.appendChild(noResults);
+        } else if (visibleCards.length > 0) {
+          const noResults = document.getElementById('no-results');
+          if (noResults) noResults.remove();
         }
-      });
-      
-      // Funzioni delete e populateModal che già avevi (non le modifico)
-    </script>
-     <script src="/socket.io/socket.io.js"></script>
-    <script>
-        // Connessione base per tracciare l'utente
-        const socket = io();
+      }
     </script>
 </body>
+
 </html>

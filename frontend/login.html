@@ -3,12 +3,206 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Login and Registration</title>
+  <title>Login e Registrazione - PonyGo</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+  <style>
+    body {
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    
+    .auth-container {
+      max-width: 450px;
+      width: 100%;
+      padding: 2rem;
+      background-color: #ffffff;
+      border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+      position: relative;
+    }
+    
+    .logo-container {
+      text-align: center;
+      margin-bottom: 1.5rem;
+    }
+    
+    .logo-icon {
+      font-size: 3.5rem;
+      color: #fd7e14;
+      background-color: #fff8ea;
+      width: 80px;
+      height: 80px;
+      line-height: 80px;
+      border-radius: 50%;
+      margin: 0 auto;
+      box-shadow: 0 5px 15px rgba(253, 126, 20, 0.2);
+      transition: all 0.3s ease;
+    }
+    
+    .logo-icon:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 20px rgba(253, 126, 20, 0.3);
+    }
+    
+    .logo-title {
+      font-size: 1.8rem;
+      font-weight: 700;
+      margin-top: 0.5rem;
+      color: #333;
+    }
+    
+    .logo-subtitle {
+      color: #6c757d;
+      font-size: 0.9rem;
+      margin-bottom: 1rem;
+    }
+    
+    .form-switcher {
+      display: flex;
+      margin-bottom: 1.5rem;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+    
+    .form-switcher button {
+      flex: 1;
+      padding: 12px;
+      border: none;
+      background-color: #e9ecef;
+      color: #495057;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    
+    .form-switcher button.active {
+      background-color: #fd7e14;
+      color: white;
+    }
+    
+    .auth-form {
+      transition: all 0.3s ease;
+      transform-origin: top;
+    }
+    
+    .auth-form h2 {
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin-bottom: 1.5rem;
+      text-align: center;
+      color: #333;
+    }
+    
+    .form-floating {
+      margin-bottom: 1rem;
+    }
+    
+    .form-floating label {
+      color: #6c757d;
+    }
+    
+    .form-control:focus {
+      border-color: #fd7e14;
+      box-shadow: 0 0 0 0.25rem rgba(253, 126, 20, 0.25);
+    }
+    
+    .btn-auth {
+      width: 100%;
+      padding: 12px;
+      font-weight: 600;
+      border-radius: 8px;
+      margin-top: 0.5rem;
+    }
+    
+    .btn-login {
+      background-color: #fd7e14;
+      border-color: #fd7e14;
+    }
+    
+    .btn-login:hover, .btn-login:focus {
+      background-color: #e76b00;
+      border-color: #e76b00;
+    }
+    
+    .btn-register {
+      background-color: #fd7e14;
+      border-color: #fd7e14;
+    }
+    
+    .btn-register:hover, .btn-register:focus {
+      background-color: #e76b00;
+      border-color: #e76b00;
+    }
+    
+    .google-signin {
+      margin-top: 1.5rem;
+      text-align: center;
+    }
+    
+    .google-signin::before {
+      content: '';
+      display: block;
+      height: 1px;
+      background-color: #e9ecef;
+      position: relative;
+      top: 10px;
+      margin-bottom: 20px;
+    }
+    
+    .google-signin-label {
+      background-color: white;
+      padding: 0 15px;
+      font-size: 0.9rem;
+      color: #6c757d;
+      position: relative;
+      top: -10px;
+    }
+    
+    .g_id_signin {
+      display: flex !important;
+      justify-content: center;
+      margin-top: 15px;
+    }
+    
+    .form-select {
+      padding: 0.75rem;
+      border-radius: 6px;
+      border: 1px solid #ced4da;
+    }
+    
+    .form-select:focus {
+      border-color: #fd7e14;
+      box-shadow: 0 0 0 0.25rem rgba(253, 126, 20, 0.25);
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .fade-in {
+      animation: fadeIn 0.5s ease forwards;
+    }
+  </style>
   <script>
     function switchForm(showLogin) {
       document.getElementById('login-form').style.display = showLogin ? 'block' : 'none';
       document.getElementById('register-form').style.display = showLogin ? 'none' : 'block';
+      
+      // Aggiorna pulsanti attivi
+      document.getElementById('login-btn').classList.toggle('active', showLogin);
+      document.getElementById('register-btn').classList.toggle('active', !showLogin);
+      
+      // Animazione
+      const formToShow = showLogin ? document.getElementById('login-form') : document.getElementById('register-form');
+      formToShow.classList.add('fade-in');
     }
 
     fetch("/config")
@@ -37,252 +231,70 @@
   </script>
   <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
-<body class="d-flex justify-content-center align-items-center vh-100 bg-light">
-  <div class="container p-4 bg-white rounded shadow" style="max-width: 400px;">
-    <div class="d-flex justify-content-between mb-3">
-      <button class="btn btn-primary" onclick="switchForm(true)">Login</button>
-      <button class="btn btn-secondary" onclick="switchForm(false)">Register</button>
+<body>
+  <div class="auth-container">
+    <!-- Logo e titolo -->
+    <div class="logo-container">
+      <div class="logo-icon">
+        <i class="bi bi-bicycle"></i>
+      </div>
+      <h1 class="logo-title">PonyGo</h1>
+      <p class="logo-subtitle">La tua consegna veloce e affidabile</p>
+    </div>
+    
+    <!-- Switcher tra login e registrazione -->
+    <div class="form-switcher">
+      <button id="login-btn" class="active" onclick="switchForm(true)">Accedi</button>
+      <button id="register-btn" onclick="switchForm(false)">Registrati</button>
     </div>
 
-    <div id="login-form">
-      <h2 class="text-center">Login</h2>
+    <!-- Form di login -->
+    <div id="login-form" class="auth-form">
       <form action="/login" method="POST">
-        <div class="mb-3">
-          <label class="form-label">Email:</label>
-          <input type="email" class="form-control" name="email" required>
+        <div class="form-floating mb-3">
+          <input type="email" class="form-control" id="emailLogin" name="email" placeholder="nome@esempio.com" required>
+          <label for="emailLogin">Email</label>
         </div>
-        <div class="mb-3">
-          <label class="form-label">Password:</label>
-          <input type="password" class="form-control" name="password" required>
+        <div class="form-floating mb-3">
+          <input type="password" class="form-control" id="passwordLogin" name="password" placeholder="Password" required>
+          <label for="passwordLogin">Password</label>
         </div>
-        <button type="submit" class="btn btn-success w-100">Login</button>
+        <button type="submit" class="btn btn-primary btn-auth btn-login">Accedi</button>
       </form>
-      <br>
-      <div id="g_id_onload" data-callback="onSignIn" data-auto_prompt="false" data-client_id="265932334016-5nnr1ncuhnq3phjjv1aposf975vnsf5t.apps.googleusercontent.com"></div>
-      <div class="g_id_signin" data-type="standard"></div>
+      
+      <!-- Google Sign-In -->
+      <div class="google-signin">
+        <span class="google-signin-label">oppure accedi con</span>
+        <div id="g_id_onload" data-callback="onSignIn" data-auto_prompt="false" data-client_id="265932334016-5nnr1ncuhnq3phjjv1aposf975vnsf5t.apps.googleusercontent.com"></div>
+        <div class="g_id_signin" data-type="standard"></div>
+      </div>
     </div>
 
-    <div id="register-form" style="display: none;">
-      <h2 class="text-center">Register</h2>
+    <!-- Form di registrazione -->
+    <div id="register-form" class="auth-form" style="display: none;">
       <form action="/register" method="POST">
-        <div class="mb-3">
-          <label class="form-label">Email:</label>
-          <input type="email" class="form-control" name="email" required>
+        <div class="form-floating mb-3">
+          <input type="email" class="form-control" id="emailRegister" name="email" placeholder="nome@esempio.com" required>
+          <label for="emailRegister">Email</label>
         </div>
-        <div class="mb-3">
-          <label class="form-label">Username:</label>
-          <input type="text" class="form-control" name="username" required>
+        <div class="form-floating mb-3">
+          <input type="text" class="form-control" id="usernameRegister" name="username" placeholder="Username" required>
+          <label for="usernameRegister">Nome Utente</label>
         </div>
-        <div class="mb-3">
-          <label class="form-label">Password:</label>
-          <input type="password" class="form-control" name="password" required>
+        <div class="form-floating mb-3">
+          <input type="password" class="form-control" id="passwordRegister" name="password" placeholder="Password" required>
+          <label for="passwordRegister">Password</label>
         </div>
-        <div class="mb-3">
-          <label class="form-label">Type:</label>
-          <select class="form-select" name="type" required>
-            <option value="user">User</option>
+        <div class="form-floating mb-3">
+          <select class="form-select" id="typeRegister" name="type" required>
+            <option value="user">Cliente</option>
             <option value="pizzaiolo">Pizzaiolo</option>
           </select>
+          <label for="typeRegister">Tipo Utente</label>
         </div>
-        <button type="submit" class="btn btn-primary w-100">Register</button>
+        <button type="submit" class="btn btn-primary btn-auth btn-register">Registrati</button>
       </form>
     </div>
   </div>
 </body>
-</html> 
-
-<!--<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Login and Registration</title>
-  <script>
-    function switchForm(showLogin) {
-      document.getElementById('login-form').style.display = showLogin ? 'block' : 'none';
-      document.getElementById('register-form').style.display = showLogin ? 'none' : 'block';
-    }
-
-
-    //PRENDO GOOGLEID DA BACKEND
-    fetch("/config")
-    .then(response => response.json(),
-  )
-    .then(config => {
-      document.getElementById("g_id_onload").setAttribute("data-client_id=", config.googleClientId);
-    });
-    
-
-
-    // Callback per gestire il token di Google
-    function onSignIn(response) {
-      console.log("Google Token ricevuto:", response);
-      console.log("Credential:", response.credential);
-      console.log("Google Token:", response.credential);
-      // Invia il token al backend per la verifica
-      fetch('/verifica-token', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ token: response.credential })
-      })
-        .then(res => res.json())
-        .then(data => {
-          console.log("Server Response:", data);
-          if (data.success) {
-            console.log("Login effettuato con successo:", data.user);
-            window.location.href = '/home';
-          } else {
-            console.error("Errore durante il login:", data.message);
-          }
-        }
-        )
-        .catch(error => console.error("Errore nella richiesta:", error))
-    }
-  </script>
-  <script src="https://accounts.google.com/gsi/client" async defer></script>
-</head>
-
-<body>
-  <div class="container">
-    <div class="form-switcher">
-      <button onclick="switchForm(true)">Login</button>
-      <button onclick="switchForm(false)">Register</button>
-    </div>
-
-    <div id="login-form" style="display: block;">
-      <h1>Login</h1>
-      <form action="/login" method="POST">
-        <div class="form-group">
-          <label for="email">Email:</label>
-          <input type="email" id="email" name="email" required>
-        </div>
-        <div class="form-group">
-          <label for="password">Password:</label>
-          <input type="password" id="password" name="password" required>
-        </div>
-        <button type="submit">Login</button>
-      </form>
-
-      <br>
-      <!-- Google Sign-In Integration -->
-     <!-- Google Sign-In Integration --> <!--
-     <div id="g_id_onload" data-callback="onSignIn" data-auto_prompt="false" data-client_id=265932334016-5nnr1ncuhnq3phjjv1aposf975vnsf5t.apps.googleusercontent.com></div>
-     <div class="g_id_signin" data-type="standard"></div>
-   </div>
-
-    <div id="register-form" style="display: none;">
-      <h1>Register</h1>
-      <form action="/register" method="POST">
-        <div class="form-group">
-          <label for="register-email">Email:</label>
-          <input type="email" id="register-email" name="email" required>
-        </div>
-        <div class="form-group">
-          <label for="register-username">Username:</label>
-          <input type="text" id="register-username" name="username" required>
-        </div>
-        <div class="form-group">
-          <label for="register-password">Password:</label>
-          <input type="password" id="register-password" name="password" required>
-        </div>
-        <div class="form-group">
-          <label for="register-type">Type:</label>
-          <select id="register-type" name="type" required>
-            <option value="user">User</option>
-            <option value="admin">Admin</option>
-          </select>
-        </div>
-        <button type="submit">Register</button>
-      </form>
-    </div>
-  </div>
-</body>
-<style>
-  body {
-    font-family: Arial, sans-serif;
-    background-color: #f4f4f9;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    color: #333;
-  }
-
-  .container {
-    background: white;
-    padding: 20px 30px;
-    border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    width: 100%;
-    max-width: 400px;
-    text-align: center;
-  }
-
-  h1 {
-    margin-bottom: 20px;
-    font-size: 1.8em;
-    color: #444;
-  }
-
-  .form-switcher {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 20px;
-  }
-
-  .form-switcher button {
-    flex: 1;
-    background: #007BFF;
-    color: white;
-    border: none;
-    padding: 10px;
-    border-radius: 5px;
-    margin: 0 5px;
-    cursor: pointer;
-    font-size: 1em;
-  }
-
-  .form-switcher button:hover {
-    background: #0056b3;
-  }
-
-  .form-group {
-    margin-bottom: 15px;
-    text-align: left;
-  }
-
-  label {
-    display: block;
-    margin-bottom: 5px;
-    font-weight: bold;
-  }
-
-  input,
-  select {
-    width: 100%;
-    padding: 10px;
-    margin-bottom: 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    font-size: 1em;
-  }
-
-  button[type="submit"] {
-    width: 100%;
-    background: #28a745;
-    color: white;
-    border: none;
-    padding: 10px;
-    border-radius: 5px;
-    font-size: 1em;
-    cursor: pointer;
-  }
-
-  button[type="submit"]:hover {
-    background: #218838;
-  }
-</style>
-
-</html> -->
+</html>

@@ -6,14 +6,90 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ordini In Preparazione - Pizzaiolo</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <style>
+      body {
+        background-color: #f8f9fa;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      }
+      .navbar-brand {
+        font-weight: 700;
+        font-size: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .nav-link {
+        font-weight: 500;
+        position: relative;
+      }
+      .nav-link.active::after {
+        content: '';
+        position: absolute;
+        width: 100%;
+        height: 2px;
+        background-color: #ffffff;
+        bottom: 0;
+        left: 0;
+      }
+      .card {
+        border: none;
+        border-radius: 12px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        transition: all 0.3s ease;
+      }
+      .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.12);
+      }
+      .btn {
+        border-radius: 8px;
+        padding: 8px 16px;
+        font-weight: 500;
+      }
+      .main-header {
+        background-color: #ffffff;
+        padding: 20px;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        margin-bottom: 30px;
+      }
+      .status-badge {
+        font-size: 1.2rem;
+        padding: 10px 20px;
+        border-radius: 30px;
+        letter-spacing: 1px;
+      }
+      .count-badge {
+        width: 50px;
+        height: 50px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        border-radius: 50%;
+      }
+      .list-group-item strong {
+        color: #4361ee;
+      }
+      .empty-state {
+        text-align: center;
+        padding: 40px 0;
+      }
+      .empty-state i {
+        font-size: 4rem;
+        color: #d1d1d1;
+        margin-bottom: 15px;
+      }
+    </style>
 </head>
 
-<body class="bg-light">
+<body>
     <!-- Navbar -->
     <nav class="navbar navbar-dark bg-dark fixed-top">
         <div class="container-fluid">
             <a class="navbar-brand" href="#">
-                PonyGo
+                <i class="bi bi-bicycle text-warning"></i> PonyGo
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar"
                 aria-controls="offcanvasNavbar">
@@ -22,83 +98,375 @@
             <div class="offcanvas offcanvas-end text-bg-dark" tabindex="-1" id="offcanvasNavbar"
                 aria-labelledby="offcanvasNavbarLabel">
                 <div class="offcanvas-header">
-                    <h5 class="offcanvas-title" id="offcanvasNavbarLabel">Menu</h5>
+                    <h5 class="offcanvas-title" id="offcanvasNavbarLabel">
+                      <i class="bi bi-menu-button-wide-fill me-2"></i> Menu
+                    </h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"
                         aria-label="Close"></button>
                 </div>
                 <div class="offcanvas-body">
                     <ul class="navbar-nav me-auto">
                         <li class="nav-item">
-                            <a class="nav-link" href="/home">Home</a>
+                            <a class="nav-link" href="/home">
+                              <i class="bi bi-house-door-fill me-2"></i> Home
+                            </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link active" aria-current="page" href="/pizzaiolo/orders/inpreparazione">In preparazione</a>
+                            <a class="nav-link active" aria-current="page" href="/pizzaiolo/orders/inpreparazione">
+                              <i class="bi bi-hourglass-split me-2"></i> In preparazione
+                            </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="/pizzaiolo/orders/pronto">Pronto</a>
+                            <a class="nav-link" href="/pizzaiolo/orders/pronto">
+                              <i class="bi bi-check-circle-fill me-2"></i> Pronto
+                            </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="/pizzaiolo/orders/consegnato">Consegnate</a>
+                            <a class="nav-link" href="/pizzaiolo/orders/consegnato">
+                              <i class="bi bi-truck me-2"></i> Consegnate
+                            </a>
                         </li>
                     </ul>
-                    <button class="btn btn-danger w-100" onclick="window.location.href='/logout'">Logout</button>
+                    <button class="btn btn-danger w-100 mt-3" onclick="window.location.href='/logout'">
+                      <i class="bi bi-box-arrow-right me-2"></i> Logout
+                    </button>
                 </div>
             </div>
         </div>
     </nav>
 
-    <div class="container text-center mt-5 pt-5">
-        <div class="d-flex justify-content-between align-items-center mb-2">
-            <h2 class="mb-3"> <span class="badge bg-warning text-dark">IN PREPARAZIONE</span></h2>
-            <span class="badge bg-primary fs-5">{{orders.length}}</span>
+    <div class="container mt-5 pt-5">
+        <div class="main-header d-flex justify-content-between align-items-center">
+            <h2 class="mb-0 d-flex align-items-center gap-2">
+                <span class="status-badge bg-warning text-dark">
+                  <i class="bi bi-hourglass-split me-2"></i> IN PREPARAZIONE
+                </span>
+            </h2>
+            <span class="count-badge bg-primary text-white fs-5">{{orders.length}}</span>
         </div>
-        
     </div>
 
-    <div class="container mt-5 pt-2">
-      <div class="row row-cols-1 row-cols-md-3 g-4">
+    <div class="container mt-4">
+      <div class="row row-cols-1 row-cols-md-3 g-4" id="ordersContainer">
         {{#if orders.length}}
           {{#each orders}}
-          <div class="col">
-            <div class="card shadow-sm h-100">
+          <div class="col" id="order-card-{{id}}">
+            <div class="card h-100">
               <div class="card-body d-flex flex-column">
-                <h5 class="card-title">{{customer}}</h5>
-                <h6 class="card-subtitle mb-2 text-muted">Ordine #{{id}}</h6>
+                <h5 class="card-title d-flex align-items-center gap-2">
+                  <i class="bi bi-person-circle text-primary"></i> {{customer}}
+                </h5>
+                <h6 class="card-subtitle mb-3 text-muted">Ordine #{{id}}</h6>
                 <ul class="list-group list-group-flush mb-3">
-                  <li class="list-group-item"><strong>Pizza:</strong> {{pizza}}</li>
-                  <li class="list-group-item"><strong>Indirizzo:</strong> {{address}}</li>
-                  <li class="list-group-item"><strong>Quantità:</strong> {{quantity}}</li>
-                  <li class="list-group-item"><strong>Note:</strong> {{notes}}</li>
-                  <li class="list-group-item"><strong>Stato:</strong> {{status}}</li>
+                  <li class="list-group-item d-flex align-items-center gap-2">
+                    <i class="bi bi-pizza text-danger"></i> <strong>Pizza:</strong> {{pizza}}
+                  </li>
+                  <li class="list-group-item d-flex align-items-center gap-2">
+                    <i class="bi bi-geo-alt-fill text-success"></i> <strong>Indirizzo:</strong> {{address}}
+                  </li>
+                  <li class="list-group-item d-flex align-items-center gap-2">
+                    <i class="bi bi-123 text-warning"></i> <strong>Quantità:</strong> {{quantity}}
+                  </li>
+                  <li class="list-group-item d-flex align-items-center gap-2">
+                    <i class="bi bi-chat-left-text text-info"></i> <strong>Note:</strong> {{notes}}
+                  </li>
+                  <li class="list-group-item d-flex align-items-center gap-2">
+                    <i class="bi bi-info-circle text-primary"></i> <strong>Stato:</strong> 
+                    <span class="badge bg-warning text-dark rounded-pill">{{status}}</span>
+                  </li>
                 </ul>
                 <div class="mt-auto d-flex justify-content-between">
-                  <button class="btn btn-danger btn-sm" onclick="deleteOrder({{id}})">Elimina</button>
-                  <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#editModal"
-                    onclick="populateModal({{id}}, '{{customer}}', '{{pizza}}', {{quantity}}, '{{notes}}', '{{address}}', '{{status}}')">Modifica</button>
+                  <button class="btn btn-danger btn-sm d-flex align-items-center gap-1" onclick="deleteOrder({{id}})">
+                    <i class="bi bi-trash3-fill"></i> Elimina
+                  </button>
+                  <button class="btn btn-primary btn-sm d-flex align-items-center gap-1" data-bs-toggle="modal" data-bs-target="#editModal"
+                    onclick="populateModal({{id}}, '{{customer}}', '{{pizza}}', {{quantity}}, '{{notes}}', '{{address}}', '{{status}}')">
+                    <i class="bi bi-pencil-square"></i> Modifica
+                  </button>
                 </div>
               </div>
-              <div class="card-footer text-body-secondary">
-                {{createdAt}}
+              <div class="card-footer text-body-secondary d-flex align-items-center gap-2">
+                <i class="bi bi-calendar3"></i> {{createdAt}}
               </div>
             </div>
           </div>
           {{/each}}
         {{else}}
-          <div class="col-12">
-            <div class="alert alert-info mt-4" role="alert">
-              Nessun ordine in preparazione al momento.
+          <div class="col-12" id="empty-state">
+            <div class="empty-state">
+              <i class="bi bi-emoji-neutral"></i>
+              <h4 class="mb-3">Nessun ordine in preparazione al momento</h4>
+              <p class="text-muted">Gli ordini in preparazione appariranno qui quando saranno disponibili.</p>
             </div>
           </div>
         {{/if}}
       </div>
     </div>
 
-    <!-- Modal Modifica (puoi riutilizzare quello che hai già nella tua app) -->
+    <!-- Modal per modifica ordine -->
+    <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <form id="editOrderForm" class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="editModalLabel">
+              <i class="bi bi-pencil me-2 text-primary"></i> Modifica Ordine
+            </h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Chiudi"></button>
+          </div>
+          <div class="modal-body">
+            <input type="hidden" id="editOrderId" name="id">
+            <div class="mb-3">
+              <label for="editCustomer" class="form-label">Cliente</label>
+              <div class="input-group">
+                <span class="input-group-text"><i class="bi bi-person"></i></span>
+                <input type="text" class="form-control" id="editCustomer" name="customer" required>
+              </div>
+            </div>
+            <div class="mb-3">
+              <label for="editAddress" class="form-label">Indirizzo</label>
+              <div class="input-group">
+                <span class="input-group-text"><i class="bi bi-geo-alt"></i></span>
+                <input type="text" class="form-control" id="editAddress" name="address" required>
+              </div>
+            </div>
+            <div class="mb-3">
+              <label for="editPizza" class="form-label">Pizza</label>
+              <div class="input-group">
+                <span class="input-group-text"><i class="bi bi-circle"></i></span>
+                <input type="text" class="form-control" id="editPizza" name="pizza" required>
+              </div>
+            </div>
+            <div class="mb-3">
+              <label for="editQuantity" class="form-label">Quantità</label>
+              <div class="input-group">
+                <span class="input-group-text"><i class="bi bi-123"></i></span>
+                <input type="number" class="form-control" id="editQuantity" name="quantity" required min="1">
+              </div>
+            </div>
+            <div class="mb-3">
+              <label for="editNotes" class="form-label">Note</label>
+              <div class="input-group">
+                <span class="input-group-text"><i class="bi bi-chat-left"></i></span>
+                <input type="text" class="form-control" id="editNotes" name="notes">
+              </div>
+            </div>
+            <div class="mb-3">
+              <label for="editStatus" class="form-label">Stato</label>
+              <div class="input-group">
+                <span class="input-group-text"><i class="bi bi-check2-circle"></i></span>
+                <select class="form-select" id="editStatus" name="status">
+                  <option value="in preparazione">In preparazione</option>
+                  <option value="pronto">Pronto</option>
+                  <option value="consegnato">Consegnato</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+              <i class="bi bi-x-lg me-1"></i> Annulla
+            </button>
+            <button type="submit" class="btn btn-primary">
+              <i class="bi bi-check-lg me-1"></i> Salva modifiche
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-     <script src="/socket.io/socket.io.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
     <script>
-        // Connessione base per tracciare l'utente
+        // Connessione Socket.IO con gestione real-time degli ordini
         const socket = io();
+        
+        // Popola il modal con i dati dell'ordine selezionato
+        function populateModal(id, customer, pizza, quantity, notes, address, status) {
+            document.getElementById('editOrderId').value = id;
+            document.getElementById('editCustomer').value = customer;
+            document.getElementById('editPizza').value = pizza;
+            document.getElementById('editQuantity').value = quantity;
+            document.getElementById('editNotes').value = notes;
+            document.getElementById('editAddress').value = address;
+            document.getElementById('editStatus').value = status;
+        }
+
+        // Gestisce la modifica dell'ordine (PUT AJAX)
+        document.getElementById('editOrderForm').addEventListener('submit', async function (e) {
+            e.preventDefault();
+            const id = document.getElementById('editOrderId').value;
+            const data = {
+                customer: document.getElementById('editCustomer').value,
+                address: document.getElementById('editAddress').value,
+                pizza: document.getElementById('editPizza').value,
+                quantity: Number(document.getElementById('editQuantity').value),
+                notes: document.getElementById('editNotes').value,
+                status: document.getElementById('editStatus').value
+            };
+            const res = await fetch(`/pizzaiolo/orders/${id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data),
+            });
+            if (res.ok) {
+                const modal = bootstrap.Modal.getInstance(document.getElementById('editModal'));
+                modal.hide();
+                
+                // Se lo stato è stato cambiato da "in preparazione" a qualcos'altro, rimuovi l'ordine da questa vista
+                if (data.status !== 'in preparazione') {
+                    removeOrderCard(id);
+                }
+            } else {
+                alert('Errore nella modifica dell\'ordine');
+            }
+        });
+
+        // Gestisce l'eliminazione (DELETE AJAX)
+        async function deleteOrder(id) {
+            if (confirm('Sei sicuro di voler eliminare questo ordine?')) {
+                const res = await fetch(`/pizzaiolo/orders/${id}`, { method: 'DELETE' });
+                if (res.ok) {
+                    removeOrderCard(id);
+                } else {
+                    alert('Errore nell\'eliminazione dell\'ordine');
+                }
+            }
+        }
+        
+        // Rimuovi una card ordine e mostra lo stato vuoto se non ci sono più ordini
+        function removeOrderCard(id) {
+            const orderCard = document.getElementById(`order-card-${id}`);
+            if (orderCard) {
+                orderCard.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                orderCard.style.opacity = '0';
+                orderCard.style.transform = 'scale(0.8)';
+                setTimeout(() => {
+                    orderCard.remove();
+                    
+                    // Se non ci sono più ordini, mostra lo stato vuoto
+                    const remainingOrders = document.querySelectorAll('#ordersContainer .col:not(#empty-state)');
+                    if (remainingOrders.length === 0) {
+                        showEmptyState();
+                    }
+                }, 500);
+            }
+        }
+        
+        // Mostra lo stato vuoto
+        function showEmptyState() {
+            const emptyState = document.getElementById('empty-state');
+            if (!emptyState) {
+                const container = document.getElementById('ordersContainer');
+                const emptyStateDiv = document.createElement('div');
+                emptyStateDiv.id = 'empty-state';
+                emptyStateDiv.className = 'col-12';
+                emptyStateDiv.innerHTML = `
+                    <div class="empty-state">
+                        <i class="bi bi-emoji-neutral"></i>
+                        <h4 class="mb-3">Nessun ordine in preparazione al momento</h4>
+                        <p class="text-muted">Gli ordini in preparazione appariranno qui quando saranno disponibili.</p>
+                    </div>
+                `;
+                container.appendChild(emptyStateDiv);
+            }
+        }
+        
+        // Aggiungi un nuovo ordine alla UI se è in preparazione
+        function addOrderToUI(order) {
+            if (order.status !== 'in preparazione') return;
+            
+            // Rimuovi lo stato vuoto se presente
+            const emptyState = document.getElementById('empty-state');
+            if (emptyState) {
+                emptyState.remove();
+            }
+            
+            const ordersContainer = document.getElementById('ordersContainer');
+            
+            const colDiv = document.createElement('div');
+            colDiv.className = 'col';
+            colDiv.id = `order-card-${order.id}`;
+            
+            colDiv.innerHTML = `
+                <div class="card h-100">
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title d-flex align-items-center gap-2">
+                            <i class="bi bi-person-circle text-primary"></i> ${order.customer}
+                        </h5>
+                        <h6 class="card-subtitle mb-3 text-muted">Ordine #${order.id}</h6>
+                        <ul class="list-group list-group-flush mb-3">
+                            <li class="list-group-item d-flex align-items-center gap-2">
+                                <i class="bi bi-pizza text-danger"></i> <strong>Pizza:</strong> ${order.pizza}
+                            </li>
+                            <li class="list-group-item d-flex align-items-center gap-2">
+                                <i class="bi bi-geo-alt-fill text-success"></i> <strong>Indirizzo:</strong> ${order.address}
+                            </li>
+                            <li class="list-group-item d-flex align-items-center gap-2">
+                                <i class="bi bi-123 text-warning"></i> <strong>Quantità:</strong> ${order.quantity}
+                            </li>
+                            <li class="list-group-item d-flex align-items-center gap-2">
+                                <i class="bi bi-chat-left-text text-info"></i> <strong>Note:</strong> ${order.notes || ''}
+                            </li>
+                            <li class="list-group-item d-flex align-items-center gap-2">
+                                <i class="bi bi-info-circle text-primary"></i> <strong>Stato:</strong> 
+                                <span class="badge bg-warning text-dark rounded-pill">in preparazione</span>
+                            </li>
+                        </ul>
+                        <div class="mt-auto d-flex justify-content-between">
+                            <button class="btn btn-danger btn-sm d-flex align-items-center gap-1" onclick="deleteOrder(${order.id})">
+                                <i class="bi bi-trash3-fill"></i> Elimina
+                            </button>
+                            <button class="btn btn-primary btn-sm d-flex align-items-center gap-1" data-bs-toggle="modal" data-bs-target="#editModal"
+                                onclick="populateModal(${order.id}, '${order.customer}', '${order.pizza}', ${order.quantity}, '${order.notes || ''}', '${order.address}', '${order.status}')">
+                                <i class="bi bi-pencil-square"></i> Modifica
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-footer text-body-secondary d-flex align-items-center gap-2">
+                        <i class="bi bi-calendar3"></i> ${order.createdAt || new Date().toLocaleString('it-IT')}
+                    </div>
+                </div>
+            `;
+            
+            ordersContainer.prepend(colDiv);
+            
+            // Evidenzia il nuovo ordine
+            setTimeout(() => {
+                const card = colDiv.querySelector('.card');
+                card.style.backgroundColor = '#fff8e1';
+                setTimeout(() => {
+                    card.style.transition = 'background-color 1s ease';
+                    card.style.backgroundColor = '';
+                }, 100);
+            }, 100);
+        }
+        
+        // Ascolta eventi Socket.IO per gli ordini
+        socket.on('new-order', (order) => {
+            if (order.status === 'in preparazione') {
+                addOrderToUI(order);
+            }
+        });
+        
+        socket.on('order-updated', (order) => {
+            // Se l'ordine è stato aggiornato a "in preparazione", aggiungerlo alla UI
+            if (order.status === 'in preparazione') {
+                // Controlla se l'ordine è già visualizzato
+                const existingOrder = document.getElementById(`order-card-${order.id}`);
+                if (!existingOrder) {
+                    addOrderToUI(order);
+                }
+            } 
+            // Se lo stato è cambiato da "in preparazione" a qualcos'altro, rimuoverlo dalla UI
+            else {
+                removeOrderCard(order.id);
+            }
+        });
+        
+        socket.on('order-deleted', (orderId) => {
+            removeOrderCard(orderId);
+        });
     </script>
 </body>
+
 </html>
